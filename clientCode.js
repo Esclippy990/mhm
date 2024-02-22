@@ -4388,7 +4388,7 @@ var socket = "null";
   }
   else{//actual rocketer
     var serverlist = {
-      "Free For All": "wss://m46qtv-3000.csb.app/",
+      "Free For All": "wss://rocketer3-s0.glitch.me/", //"wss://m46qtv-3000.csb.app/",
       "2 Teams": "wss://yfndv9-3000.csb.app/",
       "4 Teams": "wss://5r6y99-3000.csb.app/",
       "Tank Editor": ["wss://tyqfrp-3000.csb.app/", "wss://8kt8fx-3000.csb.app/"],
