@@ -6,14 +6,20 @@
   ], frames = []
   for(let i=servers.length-1;i>=0;i--) {
     let frame = document.createElement('iframe')
-    frame.src = servers[i]
+    frame.src = frame.osrc = servers[i]
     frames.push(frame)
     frame.hidden = true
     frame.style.visibility = 'hidden'
     document.body.appendChild(frame)
     console.log(`[rocketer3] iframing ${servers[i]}`)
-  } if u could br
-}()
+  } 
+  setInterval(function() {
+    for(let i=frames.length-1;i>=0;i--) {
+      let frame = frames[i]
+      frame.src = frame.osrc + '?v=' + Math.floor(Math.random() * 65536).toString(16)
+    }
+  }, 60000)// is getting bt done now in scenexe 2? its account based after update oh is it possible if i can get or not
+}() 
 
 
 // old client start
