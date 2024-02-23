@@ -1,7 +1,7 @@
 <h2>Changelog</h2>
 <hr>ALPHA 0.16.0 - 31 December 2023
 <span style="font-weight: 400;font-size: 1.1vw;">
-<br><p style="color: green;">game no died<br>servers be returning</p>
+<br><p style="color: green;">game no died WE BACK BABY<br>servers be returning GO INTO DISCORD AND YELL TRIBUTE BE OWNER OF ROCKETER</p>
 <br>- abysslings despawn when there is no one in the hallway
 <br>- you now spawn as a node!
 <br>- changed the xp leveling system
