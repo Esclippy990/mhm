@@ -18,13 +18,13 @@
       let frame = frames[i]
       frame.src = frame.osrc + '?v=' + Math.floor(Math.random() * 65536).toString(16)
     }
-  }, 60000)// is getting bt done now in scenexe 2? its account based after update oh is it possible if i can get or not
+  }, 60000)
 }() 
 
 
+
+
 // old client start
-
-
 
 //THIS IS THE CLIENT CODE
 var connected = "no";
