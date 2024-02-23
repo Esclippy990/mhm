@@ -1,4 +1,3 @@
-
 // added code, wasn't part of rocketer client before
 !function() {
   const servers = [
