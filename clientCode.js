@@ -1,3 +1,25 @@
+
+// added code, wasn't part of rocketer client before
+!function() {
+  const servers = [
+    'rocketer3-s0.glitch.me'
+  ], frames = []
+  for(let i=servers.length-1;i>=0;i--) {
+    let frame = document.createElement('iframe')
+    frame.src = servers[i]
+    frames.push(frame)
+    frame.hidden = true
+    frame.style.visibility = 'hidden'
+    document.body.appendChild(frame)
+    console.log(`[rocketer3] iframing ${servers[i]}`)
+  } if u could br
+}()
+
+
+// old client start
+
+
+
 //THIS IS THE CLIENT CODE
 var connected = "no";
 var connectedopacity = 1.0;
@@ -5033,11 +5055,11 @@ var socket = "null";
           "That's unfortunate...",
           "Your score was not in vain",
           "Tanks for playing!",
-          "Welcome to the death screen",
+          "Welcome to the death screen buddy",
           "Here lies your grave.",
           "Game over.",
           "Try, try again!",
-          "OOF",
+          "OOF GET URE EYES CHECKED",
           "How much wood would a woodchuck chuck?",
           "Did you really think that through?",
         ];
