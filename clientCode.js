@@ -26,7 +26,7 @@
 // old client start
 
 //THIS IS THE CLIENT CODE
-var connected = "no";
+var connected = "yes";
 var connectedopacity = 1.0;
 var mainMenuOpacity = 0;
 var gameStart = 0; //gamestart variable outside so that can access in play button onclick in code above
