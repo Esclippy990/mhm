@@ -1,7 +1,8 @@
 // added code, wasn't part of rocketer client before
 !function() {
   const servers = [
-    'rocketer3-s0.glitch.me'
+    'rocketer3-s0.glitch.me',
+    'rocketer3-s1.glitch.me'
   ], frames = []
   for(let i=servers.length-1;i>=0;i--) {
     let frame = document.createElement('iframe')
@@ -185,7 +186,7 @@ function canvasResizing() {
   }
 }
 
-var gamemodes = ["Free For All", "2 Teams", "4 Teams", "Tank Editor"]; //all the gamemodes available
+var gamemodes = ["Free For All", "2 Teams", "4 Teams", "Tankwsws Editor"]; //all the gamemodes available
 var gamemodecolors = ["#f04f54", "#BE7FF5", "#00E06C", "#38B764"]; //must be in same order as gamemode list
 var gamemodecolorsdark = ["#D23136", "#A061D7", "#00C24E", "#1A9946"]; //darker colors for the gamemodes (the bottom part of the gamemode display)
 var gamemodeBgFoV = [1,1,1,1];//FoV for main menu background, 1 refer to default
@@ -4416,7 +4417,7 @@ var socket = "null";
   else{//actual rocketer
     var serverlist = {
       "Free For All": "wss://rocketer3-s0.glitch.me/", //"wss://m46qtv-3000.csb.app/",
-      "2 Teams": "wss://yfndv9-3000.csb.app/",
+      "2 Teams": "wss://rocketer3-s1.glitch.me", //"wss://yfndv9-3000.csb.app/",
       "4 Teams": "wss://5r6y99-3000.csb.app/",
       "Tank Editor": ["wss://tyqfrp-3000.csb.app/", "wss://8kt8fx-3000.csb.app/"],
       "dune": "wss://kfcl7q-3000.csb.app/",
