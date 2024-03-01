@@ -126,9 +126,10 @@ var dateUpdate = "Loading changelog...";
 var gameversion = "Loading...";
 var recentUpdate = "";
 
-fetch('/changelog.txt')//get the changelog txt file
+fetch('https://rocketer.glitch.me/changelog.txt')//get the changelog txt file
 .then(function(response) {
   response.text().then(function(text) {
+    text = text.replace('<p style="color: red;">game died<br>servers may or may not be returning</p>', '<p style="color: green;">game no died<br>servers be returning</p>')
     let newChangelog = text;
     document.getElementById("changelogwords").innerHTML = newChangelog;
     //get date of latest update, which can be found between hr and br tags
