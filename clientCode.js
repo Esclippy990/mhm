@@ -4423,7 +4423,7 @@ var socket = "null";
       "Tank Editor": ["wss://tyqfrp-3000.csb.app/", "wss://8kt8fx-3000.csb.app/"],
       "dune": "wss://kfcl7q-3000.csb.app/",
       "cavern": "wss://vjwyqs-3000.csb.app/",
-      "cr": "wss://48smmk-3000.csb.app/",
+      "cr": "wss://rock-it-5.glitch.me/",
       "sanc": "wss://rock-it-4.glitch.me/",
     }
   }
