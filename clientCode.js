@@ -1,33 +1,5 @@
-// added code, wasn't part of rocketer client before
-!function() {
-  const servers = [
-    'rocketer3-s0.glitch.me',
-    'rocketer3-s1.glitch.me'
-  ], frames = []
-  for(let i=servers.length-1;i>=0;i--) {
-    let frame = document.createElement('iframe')
-    frame.src = frame.osrc = servers[i]
-    frames.push(frame)
-    frame.hidden = true
-    frame.style.visibility = 'hidden'
-    document.body.appendChild(frame)
-    console.log(`[rocketer3] iframing ${servers[i]}`)
-  } 
-  setInterval(function() {
-    for(let i=frames.length-1;i>=0;i--) {
-      let frame = frames[i]
-      frame.src = frame.osrc + '?v=' + Math.floor(Math.random() * 65536).toString(16)
-    }
-  }, 60000)
-}() 
-
-
-
-
-// old client start
-
 //THIS IS THE CLIENT CODE
-var connected = "yes";
+var connected = "no";
 var connectedopacity = 1.0;
 var mainMenuOpacity = 0;
 var gameStart = 0; //gamestart variable outside so that can access in play button onclick in code above
@@ -126,10 +98,9 @@ var dateUpdate = "Loading changelog...";
 var gameversion = "Loading...";
 var recentUpdate = "";
 
-fetch('https://rocketer.glitch.me/changelog.txt')//get the changelog txt file
+fetch('/changelog.txt')//get the changelog txt file
 .then(function(response) {
   response.text().then(function(text) {
-    text = text.replace('<p style="color: red;">game died<br>servers may or may not be returning</p>', '<p style="color: green;">game no died<br>servers be returning</p>')
     let newChangelog = text;
     document.getElementById("changelogwords").innerHTML = newChangelog;
     //get date of latest update, which can be found between hr and br tags
@@ -187,7 +158,7 @@ function canvasResizing() {
   }
 }
 
-var gamemodes = ["Free For All", "2 Teams", "4 Teams", "Tankwsws Editor"]; //all the gamemodes available
+var gamemodes = ["Free For All", "2 Teams", "4 Teams", "Tank Editor"]; //all the gamemodes available
 var gamemodecolors = ["#f04f54", "#BE7FF5", "#00E06C", "#38B764"]; //must be in same order as gamemode list
 var gamemodecolorsdark = ["#D23136", "#A061D7", "#00C24E", "#1A9946"]; //darker colors for the gamemodes (the bottom part of the gamemode display)
 var gamemodeBgFoV = [1,1,1,1];//FoV for main menu background, 1 refer to default
@@ -5062,11 +5033,11 @@ var socket = "null";
           "That's unfortunate...",
           "Your score was not in vain",
           "Tanks for playing!",
-          "Welcome to the death screen buddy",
+          "Welcome to the death screen",
           "Here lies your grave.",
           "Game over.",
           "Try, try again!",
-          "OOF GET URE EYES CHECKED",
+          "OOF",
           "How much wood would a woodchuck chuck?",
           "Did you really think that through?",
         ];
