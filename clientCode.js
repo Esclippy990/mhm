@@ -4391,9 +4391,9 @@ var socket = "null";
       "Free For All": "wss://rock-it-1.glitch.me/", //"wss://m46qtv-3000.csb.app/",
       "2 Teams": "wss://rock-it-3.glitch.me/", //"wss://yfndv9-3000.csb.app/",
       "4 Teams": "wss://rock-it-2.glitch.me/",
-      "Tank Editor": ["wss://rock-it-6.glitch.me/"],
+      "Tank Editor": ["wss://rock-it-6.glitch.me/", "wss://8kt8fx-3000.csb.app/"],
       "dune": "wss://kfcl7q-3000.csb.app/",
-      "cavern": "wss://vjwyqs-3000.csb.app/",
+      "cavern": "wss://rock-it-7.glitch.me/",
       "cr": "wss://rock-it-5.glitch.me/",
       "sanc": "wss://rock-it-4.glitch.me/",
     }
