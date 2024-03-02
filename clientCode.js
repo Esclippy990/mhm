@@ -4424,7 +4424,7 @@ var socket = "null";
       "dune": "wss://kfcl7q-3000.csb.app/",
       "cavern": "wss://vjwyqs-3000.csb.app/",
       "cr": "wss://48smmk-3000.csb.app/",
-      "sanc": "wss://7ln2nt-3000.csb.app/",
+      "sanc": "wss://rock-it-4.glitch.me/",
     }
   }
   function connectServer(whichserver,teleportingYN){//'wss://developer-rocketer.glitch.me/'

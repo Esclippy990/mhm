@@ -6,3 +6,6 @@ If you found this and attempt to advertise it,  I will find out eventually and t
 
 # I am still not feeling nice, what if you cheat?
 That has been already covered up. I have changed the sanctuary and dune's server link with fake ones. In that case, i CANNOT cheat in any way.
+
+# If someone finds out this game and uses tokens..?
+If a token somehow gets leaked, it can simply be changed.
