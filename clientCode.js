@@ -5224,6 +5224,11 @@ var socket = "null";
           connectServer(serverlist["Free For All"],"yes")
           gamelocation = "arena";
         }
+        else if (dimension=="editor"){ // test
+          socket.close();//disconnect from current server
+          connectServer('wss://rock-it-6.glitch.me/',"yes")
+          gamelocation = "arena";
+        }
         else if (dimension=="2tdm"){
           socket.close();//disconnect from current server
           connectServer(serverlist["2 Teams"],"yes")
@@ -17763,7 +17768,7 @@ scaleMainMenuUI();
         hctx.lineWidth = 4;
         hctx.textAlign = "center";
         hctx.lineJoin = "round"; //prevent spikes above the capital letter "M"
-        if (teleportingLocation=="arena" || teleportingLocation=="2tdm" || teleportingLocation=="4tdm"){
+        if (teleportingLocation=="arena" || teleportingLocation=="2tdm" || teleportingLocation=="4tdm" || teleportingLocation=="editor"){
           if (oldteleportingLocation == "crossroads"){
             hctx.strokeText("Returning from The Crossroads...", hcanvas.width/2, hcanvas.height/2);
             hctx.fillText("Returning from The Crossroads...", hcanvas.width/2, hcanvas.height/2);
