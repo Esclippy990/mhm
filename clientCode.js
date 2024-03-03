@@ -5203,41 +5203,57 @@ var socket = "null";
           socket.close();//disconnect from current server
           connectServer(serverlist.dune,"yes")
           gamelocation = "dune";
+          const tankEditorButton = document.getElementById('openEditor');
+          tankEditorButton.style = ""
         }
         else if (dimension=="sanc"){
           socket.close();//disconnect from current server
           connectServer(serverlist.sanc,"yes")
           gamelocation = "sanctuary";
+          const tankEditorButton = document.getElementById('openEditor');
+          tankEditorButton.style = ""
         }
         else if (dimension=="cavern"){
           socket.close();//disconnect from current server
           connectServer(serverlist.cavern,"yes")
           gamelocation = "cavern";
+          const tankEditorButton = document.getElementById('openEditor');
+          tankEditorButton.style = ""
         }
         else if (dimension=="cr"){
           socket.close();//disconnect from current server
           connectServer(serverlist.cr,"yes")
           gamelocation = "crossroads"
+          const tankEditorButton = document.getElementById('openEditor');
+          tankEditorButton.style = ""
         }
         else if (dimension=="arena"){
           socket.close();//disconnect from current server
           connectServer(serverlist["Free For All"],"yes")
           gamelocation = "arena";
+          const tankEditorButton = document.getElementById('openEditor');
+          tankEditorButton.style = ""
         }
         else if (dimension=="editor"){ // test
           socket.close();//disconnect from current server
           connectServer(serverlist["Tank Editor"],"yes")
           gamelocation = "tank-editor";
+          const tankEditorButton = document.getElementById('openEditor');
+          tankEditorButton.style = "display: block;"
         }
         else if (dimension=="2tdm"){
           socket.close();//disconnect from current server
           connectServer(serverlist["2 Teams"],"yes")
           gamelocation = "2tdm";
+          const tankEditorButton = document.getElementById('openEditor');
+          tankEditorButton.style = ""
         }
         else if (dimension=="4tdm"){
           socket.close();//disconnect from current server
           connectServer(serverlist["4 Teams"],"yes")
           gamelocation = "4tdm";
+          const tankEditorButton = document.getElementById('openEditor');
+          tankEditorButton.style = ""
         }
       }
     };
