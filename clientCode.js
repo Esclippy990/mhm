@@ -5226,8 +5226,8 @@ var socket = "null";
         }
         else if (dimension=="editor"){ // test
           socket.close();//disconnect from current server
-          connectServer('wss://rock-it-6.glitch.me/',"yes")
-          gamelocation = "arena";
+          connectServer(serverlist["Tank Editor"],"yes")
+          gamelocation = "tank-editor";
         }
         else if (dimension=="2tdm"){
           socket.close();//disconnect from current server
