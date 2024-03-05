@@ -159,8 +159,8 @@ function canvasResizing() {
 }
 
 var gamemodes = ["Free For All", "2 Teams", "4 Teams", "Tank Editor"]; //all the gamemodes available
-var gamemodecolors = ["#f04f54", "#BE7FF5", "#00E06C", "#38B764"]; //must be in same order as gamemode list
-var gamemodecolorsdark = ["#D23136", "#A061D7", "#00C24E", "#1A9946"]; //darker colors for the gamemodes (the bottom part of the gamemode display)
+var gamemodecolors = ["#f04f54", "#BE7FF5", "#00E06C", "#3498DB"]; //must be in same order as gamemode list
+var gamemodecolorsdark = ["#D23136", "#A061D7", "#00C24E", "#2980B9"]; //darker colors for the gamemodes (the bottom part of the gamemode display)
 var gamemodeBgFoV = [1,1,1,1];//FoV for main menu background, 1 refer to default
 var currentGmSelector = {
   //everything is hcanvas.width*property value
